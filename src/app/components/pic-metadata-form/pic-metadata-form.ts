@@ -74,11 +74,7 @@ export class PicMetadataFormComponent implements OnInit, OnDestroy {
     this.metadataForm = this.fb.group({
       investigador: [''],
       tesista: [''],
-<<<<<<< HEAD
       asesor: [''],
-=======
-      asesor: [''],  
->>>>>>> 2b63eab4a0241a63aa123ef13f36fd20708fc18a
       duracion: [''],
       presupuestoTotal: [null as number | null],
       ingresos: this.fb.array([]),

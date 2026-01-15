@@ -263,15 +263,9 @@ export class ReportMetadataDialogComponent implements OnInit { // Implementar On
 
     // ▼▼▼ --- NUEVA LÓGICA PARA PROCESAR PRESUPUESTO DINÁMICO --- ▼▼▼
     if (this.reportType === 'contrato') {
-<<<<<<< HEAD
     if (formValue.presupuestoEntidades) {
       formValue.presupuestoEntidades = formValue.presupuestoEntidades
           .filter(
-=======
-      if (formValue.presupuestoEntidades) {
-        formValue.presupuestoEntidades = formValue.presupuestoEntidades
-          .filter(
->>>>>>> 2b63eab4a0241a63aa123ef13f36fd20708fc18a
             (ent: any) =>
               ent.nombreEntidad || ent.aporteNoMonetario !== null || ent.aporteMonetario !== null
           )
@@ -279,7 +273,6 @@ export class ReportMetadataDialogComponent implements OnInit { // Implementar On
             nombreEntidad: ent.nombreEntidad,
             aporteNoMonetario:
               ent.aporteNoMonetario !== null ? Number(ent.aporteNoMonetario) : null,
-<<<<<<< HEAD
             aporteMonetario: ent.aporteMonetario !== null ? Number(ent.aporteMonetario) : null,
         }));
     }
@@ -287,14 +280,6 @@ export class ReportMetadataDialogComponent implements OnInit { // Implementar On
       delete formValue.presupuestoTotalPic;
     // ▲▲▲ --- FIN DE LA NUEVA LÓGICA --- ▲▲▲
 
-=======
-            aporteMonetario: ent.aporteMonetario !== null ? Number(ent.aporteMonetario) : null,
-          }));
-      }
-      // Borrar el campo de PIC
-      delete formValue.presupuestoTotalPic;
-      // ▲▲▲ --- FIN DE LA NUEVA LÓGICA --- ▲▲▲
->>>>>>> 2b63eab4a0241a63aa123ef13f36fd20708fc18a
     } else {
       // Procesar presupuesto FIJO (PIC)
       formValue.presupuestoTotalPic = formValue.presupuestoTotalPic !== null ? Number(formValue.presupuestoTotalPic) : null; // Borrar el campo de Contrato

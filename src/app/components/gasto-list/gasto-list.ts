@@ -16,7 +16,6 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { GastoFormComponent } from '../gasto-form/gasto-form';
 import { MatTooltipModule } from '@angular/material/tooltip';
 // --- FIN DE NUEVAS IMPORTACIONES ---
-import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Importaciones de Angular Material
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
