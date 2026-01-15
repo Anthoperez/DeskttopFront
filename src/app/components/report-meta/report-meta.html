@@ -1,0 +1,45 @@
+<mat-card class="report-meta-card">
+  <mat-card-header>
+    <mat-card-title>Generador de Reporte por Meta</mat-card-title>
+    <mat-card-subtitle
+      >Genera un informe global con todos los registros, agrupados en hojas
+      separadas por cada 'Meta'.</mat-card-subtitle
+    >
+  </mat-card-header>
+
+  <mat-card-content class="card-content">
+    <div class="action-container">
+      <img
+        src="/assets/reporte.png"
+        alt="Ilustración de reporte"
+        class="report-illustration"
+      />
+
+      <p class="instruction-text">
+        Este proceso consultará todos los registros en la base de datos y los
+        agrupará por su código de Meta (ej: 0081, 0106, 0110).
+      </p>
+
+      <button
+        mat-raised-button
+        color="accent"
+        class="generate-button"
+        [disabled]="isGenerating"
+        (click)="generateReport()"
+      >
+        <ng-container *ngIf="!isGenerating">
+          <mat-icon>download</mat-icon>
+          Generar y Descargar Reporte
+        </ng-container>
+
+        <ng-container *ngIf="isGenerating">
+          <mat-progress-spinner
+            mode="indeterminate"
+            diameter="24"
+          ></mat-progress-spinner>
+          <span>Generando...</span>
+        </ng-container>
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

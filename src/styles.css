@@ -1,0 +1,20 @@
+/* src/styles.css */
+body {
+  background-color: #f4f6f8; /* Un gris muy suave, casi blanco, para el fondo de la app */
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+}
+
+/* Hacer que las tarjetas floten suavemente */
+.mat-mdc-card {
+  border-radius: 16px !important; /* Bordes más redondeados */
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important; /* Sombra suave y difusa */
+  border: 1px solid rgba(0,0,0,0.03); /* Borde sutil */
+  background: white;
+}
+
+/* Títulos de sección más elegantes */
+h1, h2, h3 {
+  color: #1a237e; /* Azul oscuro corporativo */
+  font-weight: 500;
+  letter-spacing: -0.5px;
+}

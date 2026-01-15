@@ -1,0 +1,47 @@
+/* src/app/components/report-meta/report-meta.css */
+/* Estilos Generales de la Tarjeta */
+.report-meta-card {
+  max-width: 500px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.card-content {
+  padding: 24px !important;
+}
+
+/* Contenedor de Acción Principal */
+.action-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.report-illustration {
+  width: 150px;
+  margin-bottom: 24px;
+}
+
+.instruction-text {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 24px;
+}
+
+/* Botón de Generar */
+.generate-button {
+  width: 100%;
+  max-width: 350px;
+  margin-top: 16px;
+  padding: 12px 0;
+  font-size: 1rem;
+}
+
+.generate-button mat-icon,
+.generate-button mat-progress-spinner {
+  margin-right: 12px;
+}
+
+.generate-button span {
+  line-height: 24px; /* Alinea el texto con el spinner */
+}

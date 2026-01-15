@@ -1,0 +1,201 @@
+<div class= "pic-form-container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Configurar Metadatos de Proyectos PIC</mat-card-title>
+            <mat-card-subtitle>Seleccione un proyecto para cargar o guardar sus datos manuales ("cuadro
+                rojo").</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Seleccionar Proyecto PIC</mat-label>
+                <mat-icon matPrefix>search</mat-icon>
+                <mat-select [formControl]="selectedProject">
+                    <mat-option>
+                        <ngx-mat-select-search [formControl]="projectFilterCtrl" placeholderLabel="Buscar proyecto..."
+                            noEntriesFoundLabel="No se encontró ningún proyecto">
+                        </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngIf="isFetchingList" disabled>
+                        <mat-spinner diameter="20" style="margin: 0 auto;"></mat-spinner>
+                    </mat-option>
+                    <mat-option *ngFor="let p of (filteredProjects | async)" [value]="p">
+                        {{ p }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="selectedProject.hasError('required')">Debe seleccionar un proyecto</mat-error>
+            </mat-form-field>
+
+            <div *ngIf="isPageLoading" class="spinner-container">
+                <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+            </div>
+
+            <form [formGroup]="metadataForm" *ngIf="!isPageLoading && selectedProject.value">
+
+                <h3>Datos Generales del Proyecto</h3>
+                <div class="form-grid">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Investigador</mat-label>
+                        <input matInput formControlName="investigador">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Duración (Ej: 24 Meses)</mat-label>
+                        <input matInput formControlName="duracion">
+                    </mat-form-field>
+                </div>
+                <div class="form-grid">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Tesista (Opcional - Modalidad 2)</mat-label>
+                        <input matInput formControlName="tesista" placeholder="Nombre del tesista">
+                        <mat-hint>Llenar solo si aplica</mat-hint>
+                    </mat-form-field>
+                
+                    <mat-form-field appearance="outline">
+                        <mat-label>Asesor (Opcional - Modalidad 2)</mat-label>
+                        <input matInput formControlName="asesor" placeholder="Nombre del asesor">
+                        <mat-hint>Llenar solo si aplica</mat-hint>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-grid">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Tesista (Opcional - Modalidad 2)</mat-label>
+                        <input matInput formControlName="tesista" placeholder="Nombre del tesista">
+                        <mat-hint>Llenar solo si aplica</mat-hint>
+                    </mat-form-field>
+                
+                    <mat-form-field appearance="outline">
+                        <mat-label>Asesor (Opcional - Modalidad 2)</mat-label>
+                        <input matInput formControlName="asesor" placeholder="Nombre del asesor">
+                        <mat-hint>Llenar solo si aplica</mat-hint>
+                    </mat-form-field>
+                </div>
+                
+                <hr>
+
+                <h3>Presupuesto</h3>
+                <mat-form-field appearance="outline" class="presupuesto-field">
+                    <mat-label>Presupuesto Total Asignado</mat-label>
+                    <input matInput type="text" formControlName="presupuestoTotal" placeholder="0.00"
+                        (focus)="onCurrencyFocus($event, metadataForm.get('presupuestoTotal'))"
+                        (blur)="onCurrencyBlur($event, metadataForm.get('presupuestoTotal'))">
+                </mat-form-field>
+
+                <hr>
+
+                <h3>Sección de Ingresos</h3>
+                <div formArrayName="ingresos">
+                    <div *ngFor="let ingreso of ingresos.controls; let i=index" [formGroupName]="i" class="dynamic-row">
+                        <mat-form-field appearance="outline" class="desc-field">
+                            <mat-label>Descripción del Ingreso (Ej: R.R Nº...)</mat-label>
+                            <textarea matInput formControlName="descripcion" rows="1"></textarea>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="monto-field">
+                            <mat-label>Monto</mat-label>
+                            <input matInput type="text" formControlName="monto"
+                                (focus)="onCurrencyFocus($event, ingreso.get('monto'))"
+                                (blur)="onCurrencyBlur($event, ingreso.get('monto'))">
+                        </mat-form-field>
+
+                        <button mat-icon-button color="warn" (click)="eliminarIngreso(i)" type="button">
+                            <mat-icon>delete_outline</mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <button mat-stroked-button color="primary" type="button" (click)="agregarIngreso()" class="full-width">
+                    <mat-icon>add</mat-icon> Añadir Fila de Ingreso
+                </button>
+
+                <hr>
+
+                <h3>Ejecución de Gastos - Años Anteriores</h3>
+                <div formArrayName="gastosAnosAnteriores">
+                    <div *ngFor="let gastoGroup of gastosAnosAnteriores.controls; let i = index" [formGroupName]="i"
+                        class="gasto-anterior-dynamic-grid">
+
+                        <div class="gasto-header">
+                            <mat-form-field appearance="outline" class="year-field">
+                                <mat-label>Año</mat-label>
+                                <input matInput type="number" formControlName="year" required>
+                            </mat-form-field>
+                            <button mat-icon-button color="warn" type="button" (click)="eliminarGastoAnoAnterior(i)">
+                                <mat-icon>delete_outline</mat-icon>
+                            </button>
+                        </div>
+
+                        <div class="gasto-grid">
+                            <mat-form-field appearance="outline" class="full-width">
+                                <mat-label>Bienes Corrientes</mat-label>
+                                <input matInput type="text" formControlName="bienesCorrientes" placeholder="0.00"
+                                    (focus)="onCurrencyFocus($event, gastoGroup.get('bienesCorrientes'))"
+                                    (blur)="onCurrencyBlur($event, gastoGroup.get('bienesCorrientes'))">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="full-width">
+                                <mat-label>Bienes Capital</mat-label>
+                                <input matInput type="text" formControlName="bienesCapital" placeholder="0.00"
+                                    (focus)="onCurrencyFocus($event, gastoGroup.get('bienesCapital'))"
+                                    (blur)="onCurrencyBlur($event, gastoGroup.get('bienesCapital'))">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="full-width">
+                                <mat-label>Servicios</mat-label>
+                                <input matInput type="text" formControlName="servicios" placeholder="0.00"
+                                    (focus)="onCurrencyFocus($event, gastoGroup.get('servicios'))"
+                                    (blur)="onCurrencyBlur($event, gastoGroup.get('servicios'))">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="full-width">
+                                <mat-label>Subvención</mat-label>
+                                <input matInput type="text" formControlName="subvencion" placeholder="0.00"
+                                    (focus)="onCurrencyFocus($event, gastoGroup.get('subvencion'))"
+                                    (blur)="onCurrencyBlur($event, gastoGroup.get('subvencion'))">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="full-width">
+                                <mat-label>Viáticos</mat-label>
+                                <input matInput type="text" formControlName="viaticos" placeholder="0.00"
+                                    (focus)="onCurrencyFocus($event, gastoGroup.get('viaticos'))"
+                                    (blur)="onCurrencyBlur($event, gastoGroup.get('viaticos'))">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="full-width">
+                                <mat-label>Encargo Interno</mat-label>
+                                <input matInput type="text" formControlName="encargoInterno" placeholder="0.00"
+                                    (focus)="onCurrencyFocus($event, gastoGroup.get('encargoInterno'))"
+                                    (blur)="onCurrencyBlur($event, gastoGroup.get('encargoInterno'))">
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+                </div>
+                <button mat-stroked-button color="primary" type="button" (click)="agregarGastoAnoAnterior()" class="full-width">
+                    <mat-icon>add</mat-icon> Añadir Fila de Año Anterior
+                </button>
+                </form>
+                </mat-card-content>
+                
+                <mat-card-actions align="end">
+                    <button mat-raised-button color="accent"
+                        [disabled]="saveState !== 'idle' || isPageLoading || metadataForm.invalid || selectedProject.invalid"
+                        (click)="saveData()">
+                        <ng-container [ngSwitch]="saveState">
+                
+                            <span *ngSwitchCase="'saving'" class="button-content-wrapper">
+                                <mat-progress-spinner diameter="20" mode="indeterminate"
+                                    [style.margin-right.px]="8"></mat-progress-spinner>
+                                Guardando...
+                            </span>
+                
+                            <span *ngSwitchCase="'saved'" class="button-content-wrapper">
+                                <mat-icon>check</mat-icon>
+                                ¡Guardado!
+                            </span>
+                
+                            <span *ngSwitchDefault class="button-content-wrapper">
+                                <mat-icon>save</mat-icon>
+                                Guardar Datos del Proyecto
+                            </span>
+                
+                        </ng-container>
+                    </button>
+                </mat-card-actions>
+                </mat-card>
+                </div>

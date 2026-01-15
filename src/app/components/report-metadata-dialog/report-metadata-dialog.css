@@ -1,0 +1,127 @@
+/* src/app/components/report-metadata-dialog/report-metadata-dialog.css */
+
+.report-metadata-dialog {
+  max-width: 90vw; /* Ancho fijo para el diálogo */
+}
+
+.dialog-content {
+  max-height: 80vh; /* Permite scroll si el contenido es muy largo */
+  overflow-y: auto; /* Habilita el scroll vertical */
+  padding: 20px;
+}
+
+.metadata-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px; /* Un poco de padding interno */
+}
+
+.full-width {
+  width: 100%;
+}
+
+.date-duration-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.ingreso-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto; /* Descripción, Monto, Botón Eliminar */
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ingreso-desc {
+  flex-grow: 1;
+}
+
+.ingreso-monto {
+  width: 120px;
+}
+
+/* ▼▼▼ NUEVOS ESTILOS PARA PRESUPUESTO Y GASTOS AÑO ANTERIOR ▼▼▼ */
+.presupuesto-grid, .gastos-anterior-grid {
+  display: grid;
+  grid-template-columns: 150px repeat(3, 1fr); /* Etiqueta + 3 columnas de valor */
+  gap: 8px;
+  align-items: center;
+}
+
+.presupuesto-grid .header-cell {
+  font-weight: bold;
+  text-align: center;
+  grid-column: span 1; /* Cada header ocupa una columna */
+}
+
+.presupuesto-grid .label-cell {
+  font-weight: bold;
+  text-align: right; /* Alinea etiquetas a la derecha */
+}
+
+.gastos-anterior-grid {
+  grid-template-columns: repeat(4, 1fr); /* Ajusta a 4 columnas de campos */
+  gap: 12px;
+}
+/* ▲▲▲ FIN NUEVOS ESTILOS ▼▼▼ */
+
+hr {
+  border: 0;
+  border-top: 1px solid #eee;
+  margin: 20px 0;
+}
+
+/* Opcional: Añadir a report-metadata-dialog.css */
+.gastos-anterior-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: space-between;
+}
+.gasto-anterior-year {
+  flex-grow: 1;
+  max-width: 150px; /* Opcional, para que no ocupe todo */
+}
+.gastos-anterior-grid-dinamico {
+  padding-bottom: 16px;
+}
+
+/* ▼▼▼ AÑADE ESTOS NUEVOS ESTILOS ▼▼▼ */
+.dynamic-presupuesto-grid {
+  display: grid;
+  /* 5 columnas: Nombre, Aporte1, Aporte2, Total, Botón */
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.dynamic-presupuesto-grid .header-cell {
+  font-weight: bold;
+  font-size: 0.9em;
+  color: #555;
+  text-align: center;
+  margin-bottom: -8px; /* Acerca la cabecera a las filas */
+}
+.dynamic-presupuesto-grid .header-cell.label-cell {
+  text-align: left;
+  padding-left: 8px;
+}
+
+/* Ocupa la primera columna (más ancha) */
+.dynamic-presupuesto-grid .cell-entidad {
+  grid-column: 1 / 2;
+}
+
+.dynamic-presupuesto-grid .total-cell input {
+  font-weight: bold;
+  color: #333;
+}
+
+.dynamic-presupuesto-grid .delete-button {
+  margin-top: -16px; /* Alinea el botón con los inputs */
+}
+/* ▲▲▲ FIN DE NUEVOS ESTILOS ▲▲▲ */

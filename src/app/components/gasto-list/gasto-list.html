@@ -1,0 +1,206 @@
+<mat-card>
+  <mat-card-header>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <mat-icon style="color: #263238;">table_chart</mat-icon>
+      <mat-card-title>Registro de Gastos</mat-card-title>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <mat-form-field class="filter-field" appearance="outline" subscriptSizing="dynamic">
+        <mat-icon matPrefix style="color: #757575; margin-right: 8px;">search</mat-icon>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Buscar por SIAF, Nombre, Concepto..." #input>
+        <button *ngIf="input.value" matSuffix mat-icon-button aria-label="Limpiar" (click)="input.value=''; applyFilter($event)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <button mat-stroked-button color="warn" (click)="eliminarTodos()" class="delete-all-button">
+        <mat-icon>delete_sweep</mat-icon>
+        Limpiar Tabla
+      </button>
+    </div>
+  </mat-card-header>
+
+  <mat-card-content class="table-container">
+
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z0">
+
+      <ng-container matColumnDef="tipoDocumento">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> TIPO DOC. </th>
+        <td mat-cell *matCellDef="let element"> 
+            <span style="font-weight: 500;">{{ element.tipoDocumento }}</span> 
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="numeroDocumento">
+        <th mat-header-cell *matHeaderCellDef> NÚMERO </th>
+        <td mat-cell *matCellDef="let element" style="text-align: center; min-width: 100px;"> {{ element.numeroDocumento }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="siaf">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> SIAF </th>
+        <td mat-cell *matCellDef="let element"> {{ element.siaf }} </td>
+      </ng-container>
+
+      
+      <ng-container matColumnDef="aNombreDe">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> A NOMBRE DE </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="texto-cortado ancho-medio">
+            {{ element.aNombreDe }}
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="concepto">
+        <th mat-header-cell *matHeaderCellDef> CONCEPTO </th>
+        <td mat-cell *matCellDef="let element">
+           <div class="texto-cortado ancho-medio">
+            {{ element.concepto }}
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="monto" >
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> MONTO </th>
+        <td mat-cell *matCellDef="let element" style="text-align: center;">
+            <span class="monto-badge" [ngClass]="{ 'negativo': element.monto < 0 }">
+                {{ element.monto | currency : 'S/ ' }}
+            </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="monto2">
+        <th mat-header-cell *matHeaderCellDef style="text-align: center; min-width: 100px;"> MONTO 2 </th>
+        <td mat-cell *matCellDef="let element" style="text-align: center;">
+            <span *ngIf="element.monto2" class="monto-badge" [ngClass]="{ 'negativo': element.monto2 < 0 }">
+                {{ element.monto2 | currency : 'S/ ' }}
+            </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="especifica">
+        <th mat-header-cell *matHeaderCellDef style="text-align: center; min-width: 140px;"> ESPECÍFICA </th>
+        <td mat-cell *matCellDef="let element"> {{ element.especifica }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="especifica2">
+        <th mat-header-cell *matHeaderCellDef style="text-align: center; min-width: 140px;"> ESPECÍFICA 2 </th>
+        <td mat-cell *matCellDef="let element"> {{ element.especifica2 }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="ff">
+        <th mat-header-cell *matHeaderCellDef> FF </th>
+        <td mat-cell *matCellDef="let element" style="text-align: center; min-width: 100px;"> 
+            <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 4px; font-size: 11px;">{{ element.ff }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="mes">
+        <th mat-header-cell *matHeaderCellDef> MES </th>
+        <td mat-cell *matCellDef="let element"> {{ element.mes }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="fechaDevengado">
+        <th mat-header-cell *matHeaderCellDef> DEVENGADO </th>
+        <td mat-cell *matCellDef="let element"> {{ element.fechaDevengado | date : 'dd/MM/yyyy' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="proyecto">
+        <th mat-header-cell *matHeaderCellDef> PROYECTO </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="texto-cortado ancho-medio">
+            {{ element.proyecto }}
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="meta">
+        <th mat-header-cell *matHeaderCellDef> META </th>
+        <td mat-cell *matCellDef="let element"> {{ element.meta }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="certificacionViatico">
+        <th mat-header-cell *matHeaderCellDef> CERT. </th>
+        <td mat-cell *matCellDef="let element"> {{ element.certificacionViatico }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="destino">
+        <th mat-header-cell *matHeaderCellDef> DESTINO </th>
+        <td mat-cell *matCellDef="let element"> {{ element.destino }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="fechaSalida">
+        <th mat-header-cell *matHeaderCellDef> SALIDA </th>
+        <td mat-cell *matCellDef="let element"> {{ element.fechaSalida | date : 'dd/MM/yyyy' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="fechaRetorno">
+        <th mat-header-cell *matHeaderCellDef> RETORNO </th>
+        <td mat-cell *matCellDef="let element"> {{ element.fechaRetorno | date : 'dd/MM/yyyy' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="acciones" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef style="text-align: center;"> ACCIÓN </th>
+        <td mat-cell *matCellDef="let element">
+            <div style="display: flex; justify-content: center; gap: 8px; width: 100%;">
+                <button mat-icon-button color="primary" (click)="editarGasto(element)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="eliminarGasto(element.id)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" [colSpan]="displayedColumns.length" style="text-align: center; padding: 40px; color: #757575;">
+          <mat-icon style="font-size: 40px; width: 40px; height: 40px; margin-bottom: 10px;">manage_search</mat-icon>
+          <p>No se encontraron registros para "{{input.value}}"</p>
+        </td>
+      </tr>
+
+    </table>
+
+  </mat-card-content>
+
+  <mat-paginator [pageSizeOptions]="[15, 25, 50, 100]" showFirstLastButtons
+    style="border-top: 1px solid #e0e0e0; background: #f5f5f5;">
+  </mat-paginator>
+
+</mat-card>
+
+<ng-template #confirmDeleteTemplate let-data>
+  <h2 mat-dialog-title>Confirmar Eliminación</h2>
+    <mat-dialog-content>
+      <p>{{ data.mensaje }}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Cancelar</button>
+      <button mat-raised-button color="warn" [mat-dialog-close]="true">Eliminar</button>
+    </mat-dialog-actions>
+</ng-template>
+
+<ng-template #confirmDeleteAllTemplate>
+    <h2 mat-dialog-title style="color: red;">¡PELIGRO: ELIMINAR TODO!</h2>
+    <mat-dialog-content>
+      <p>Esta acción es irreversible. Se borrarán <strong>TODOS</strong> los registros de la base de datos.</p>
+      <p>Para confirmar, escribe la palabra <strong>ELIMINAR</strong> abajo:</p>
+      
+      <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Escribe ELIMINAR</mat-label>
+        <input matInput #confirmInput autocomplete="off">
+      </mat-form-field>
+    </mat-dialog-content>
+  
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Cancelar</button>
+      <button mat-raised-button color="warn" [mat-dialog-close]="confirmInput.value">
+        BORRAR TODO
+      </button>
+    </mat-dialog-actions>
+</ng-template>

@@ -1,0 +1,47 @@
+<mat-card class="importer-card">
+  <mat-card-header>
+    <mat-card-title>Importar desde Excel</mat-card-title>
+    <mat-card-subtitle>Carga un archivo para procesar sus hojas automáticamente</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <input type="file" (change)="onFileChange($event)" id="file-input" accept=".xlsx, .xls" hidden #fileInput />
+
+    <div class="drop-zone" (click)="fileInput.click()" [class.processing]="processing">
+
+      <div *ngIf="!fileName && !processing" class="drop-zone-prompt">
+        <mat-icon class="upload-icon">cloud_upload</mat-icon>
+        <p><strong>Arrastra y suelta</strong> tu archivo aquí</p>
+        <span class="separator">o</span>
+        <button mat-stroked-button color="primary" type="button">
+          Seleccionar Archivo
+        </button>
+      </div>
+
+      <div *ngIf="fileName && !processing" class="file-preview">
+        <mat-icon class="file-icon">insert_drive_file</mat-icon>
+        <span class="file-name">{{ fileName }}</span>
+        <button mat-button color="primary" type="button">Cambiar archivo</button>
+      </div>
+
+      <div *ngIf="processing" class="progress-container">
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        <p>Procesando <strong>{{ fileName }}</strong>, por favor espera...</p>
+      </div>
+    </div>
+
+    <div *ngIf="recordCount > 0 && !processing" class="summary-container">
+      <mat-icon color="primary">check_circle</mat-icon>
+      <p>
+        <strong>{{ recordCount }}</strong> registros válidos encontrados y listos para importar.
+      </p>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button mat-raised-button color="accent" [disabled]="recordCount === 0 || processing" (click)="uploadData()">
+      <mat-icon>upload</mat-icon>
+      Importar {{ recordCount > 0 ? recordCount + ' Registros' : '' }}
+    </button>
+  </mat-card-actions>
+</mat-card>

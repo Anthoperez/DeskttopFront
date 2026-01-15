@@ -1,0 +1,128 @@
+/* Estilo general para la tarjeta */
+.importer-card {
+  max-width: 650px;
+  margin: 3rem auto;
+  padding: 2rem;
+}
+
+/* --- Zona de Carga (Drop Zone) --- */
+.drop-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px; /* Un poco más alto */
+  padding: 3rem;
+  border: 2px dashed #cfd8dc; /* Gris azulado suave */
+  border-radius: 24px; /* Muy redondeado */
+  background: #fafafa; /* Fondo casi blanco */
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efecto al pasar el mouse por encima */
+.drop-zone:hover {
+  border-color: #3f51b5;
+  background-color: #e8eaf6; /* Azul muy pálido al pasar el mouse */
+  transform: translateY(-2px); /* Efecto de elevación */
+}
+
+/* Evita el hover cuando está en estado de procesamiento */
+.drop-zone.processing {
+  cursor: not-allowed;
+  background-color: #f5f5f5;
+  border-color: #ccc;
+}
+
+/* --- Estilos para los diferentes estados dentro de la Drop Zone --- */
+
+/* 1. Estado Inicial (Prompt) */
+.drop-zone-prompt .upload-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #5c6bc0; /* Azul índigo suave */
+  margin-bottom: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.drop-zone:hover .upload-icon {
+  transform: scale(1.1); /* El icono crece un poco */
+  color: #3f51b5;
+}
+
+.drop-zone-prompt p {
+  font-size: 1.2rem;
+  color: #546e7a;
+  font-weight: 400;
+}
+
+/* Botón dentro del dropzone */
+.drop-zone button {
+  margin-top: 1rem;
+  border-radius: 50px; /* Botón píldora */
+  padding: 0 2rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.drop-zone-prompt .separator {
+  display: block;
+  margin-bottom: 1rem;
+  color: #777;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+/* 2. Estado de Archivo Seleccionado */
+.file-preview .file-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #777;
+}
+.file-preview .file-name {
+  display: block;
+  font-weight: bold;
+  margin: 1rem 0;
+  color: #333;
+}
+
+/* 3. Estado de Procesamiento */
+.progress-container {
+  width: 80%;
+  text-align: center;
+}
+.progress-container p {
+  margin-top: 1rem;
+  color: #555;
+}
+
+/* --- Contenedor de Resumen --- */
+.summary-container {
+  margin-top: 2rem;
+  background-color: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+}
+.summary-container mat-icon {
+  color: #4caf50; /* Verde éxito */
+}
+.summary-container p {
+  margin: 0;
+  font-weight: 500;
+}
+
+/* --- Acciones de la Tarjeta --- */
+mat-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem !important; /* Asegura el padding */
+}
+mat-card-actions button mat-icon {
+  margin-right: 8px;
+}

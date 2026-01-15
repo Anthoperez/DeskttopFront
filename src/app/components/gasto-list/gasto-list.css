@@ -1,0 +1,106 @@
+/* --- 1. CONFIGURACIÓN DE LA TABLA --- */
+.table-container {
+    overflow-x: auto;
+    max-height: calc(100vh - 180px);
+    background: white;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse; /* Vuelve a collapse para alinear mejor */
+    min-width: 1200px;
+}
+
+/* --- 2. ESTILOS DE CELDAS (TD / TH) --- */
+th.mat-header-cell, td.mat-cell {
+    padding: 0 16px; /* Un poco más de aire horizontal */
+    border-bottom: 1px solid #f0f0f0;
+    height: 65px; /* Altura fija para que la fila se vea "gordita" y elegante */
+    vertical-align: middle; /* Centrado vertical vital */
+    font-size: 13px;
+    color: #455a64;
+}
+
+/* Header */
+th.mat-header-cell {
+    background-color: #fafafa; /* Fondo muy claro para el header */
+    color: #263238;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-bottom: 2px solid #e0e0e0;
+    white-space: nowrap; /* Títulos siempre en una línea */
+}
+
+/* --- 3. CLASES PARA CORTAR TEXTO (EL TRUCO) --- */
+/* Esto se aplica al DIV dentro de la celda, no a la celda misma */
+.texto-cortado {
+    white-space: nowrap;      /* Una sola línea */
+    overflow: hidden;         /* Ocultar sobrante */
+    text-overflow: ellipsis;  /* Puntos suspensivos (...) */
+    display: block;           /* Comportamiento de bloque DENTRO de la celda */
+}
+
+/* Tamaños específicos */
+.ancho-medio {
+    max-width: 180px; /* Ajusta según tu gusto */
+}
+.ancho-largo {
+    max-width: 280px; /* Para conceptos largos */
+}
+
+/* --- 4. ESTILO BOTÓN VERDE (MONTO) --- */
+.monto-badge {
+    background-color: #E0F2F1;
+    color: #00695C;
+    font-weight: 700;
+    font-family: 'Roboto', sans-serif; /* O la fuente que uses */
+    padding: 8px 10px;
+    border-radius: 50px;
+    display: inline-block;
+    min-width: 100px;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+.monto-badge.negativo {
+    background-color: #FFEBEE;
+    color: #C62828;
+}
+
+/* --- 5. COLUMNAS PEQUEÑAS (Centrado) --- */
+.mat-column-tipoDocumento, 
+.mat-column-numeroDocumento, 
+.mat-column-siaf, 
+.mat-column-ff, 
+.mat-column-mes {
+    text-align: center;
+}
+
+.mat-column-siaf {
+    font-weight: bold;
+    color: #1976D2;
+}
+
+/* --- 6. COLUMNA ACCIONES STICKY --- */
+.mat-column-acciones {
+    position: sticky !important;
+    right: 0;
+    background: #fff; /* Tapar el scroll */
+    border-left: 1px solid #f0f0f0;
+    width: 100px;
+    padding: 0 8px !important;
+    z-index: 100;
+}
+th.mat-column-acciones {
+    background-color: #fafafa !important; /* Mismo color del header */
+    z-index: 101;
+}
+
+/* Fix Hover */
+tr.mat-row:hover { background-color: #f5f5f5; }
+tr.mat-row:hover .mat-column-acciones { background-color: #f5f5f5; }
+
+/* Estilos tarjeta general */
+mat-card {
+    border: none;
+    box-shadow: none !important;
+}

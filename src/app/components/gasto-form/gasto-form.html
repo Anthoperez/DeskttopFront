@@ -1,0 +1,187 @@
+<div class="page-container">
+  <h1>{{ isEditMode ? 'Editar Gasto' : 'Registro de Nuevo Gasto' }}</h1>
+
+  <form [formGroup]="gastoForm" (ngSubmit)="onSubmit()" class="form-container">
+    <div class="section-grid">
+      <mat-form-field>
+        <mat-label>DOC</mat-label>
+        <mat-select formControlName="tipoDocumento">
+          <mat-option *ngFor="let tipo of tiposDocumento" [value]="tipo">{{
+            tipo
+          }}</mat-option>
+        </mat-select>
+        <mat-error>Campo requerido</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Nº Documento</mat-label>
+        <input
+          matInput
+          formControlName="numeroDocumento"
+          (blur)="padField('numeroDocumento', 4)"
+          placeholder="Ej: 20"
+        />
+        <mat-error>Campo requerido</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>SIAF</mat-label>
+        <input matInput formControlName="siaf" (blur)="padField('siaf', 4)" placeholder="Ej: 4487" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>A Nombre De</mat-label>
+        <input matInput formControlName="aNombreDe" />
+        <mat-error>Campo requerido</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="full-width">
+        <mat-label>Concepto</mat-label>
+        <textarea matInput formControlName="concepto" rows="3"></textarea>
+        <mat-error>Campo requerido</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Monto Principal</mat-label>
+        <input
+          matInput
+          type="text"
+          formControlName="monto"
+          (focus)="onCurrencyFocus($event)"
+          (blur)="onCurrencyBlur($event, 'monto')"
+          placeholder="Ej: 23,500.50"
+        />
+        <mat-error>Monto requerido</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Específica Principal</mat-label>
+        <input matInput formControlName="especifica" />
+        <mat-error>Campo requerido</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Monto 2 (Opcional)</mat-label>
+        <input
+          matInput
+          type="text"
+          formControlName="monto2"
+          (focus)="onCurrencyFocus($event)"
+          (blur)="onCurrencyBlur($event, 'monto2')"
+          placeholder="Ej: 100.00"
+        />
+        </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Específica 2 (Opcional)</mat-label>
+        <input matInput formControlName="especifica2" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Fuente de Finan.</mat-label>
+        <mat-select formControlName="ff">
+          <mat-option *ngFor="let fuente of fuentesFinanciamiento" [value]="fuente">{{ fuente }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Mes</mat-label>
+        <mat-select formControlName="mes">
+          <mat-option *ngFor="let mes of meses" [value]="mes">{{ mes }}</mat-option>
+        </mat-select>
+        <mat-error>Campo requerido</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>F. Devengado SIAF</mat-label>
+        <input matInput [matDatepicker]="pickerDevengado" formControlName="fechaDevengado" />
+        <mat-datepicker-toggle matSuffix [for]="pickerDevengado"></mat-datepicker-toggle>
+        <mat-datepicker #pickerDevengado></mat-datepicker>
+        <mat-error>Campo requerido</mat-error>
+      </mat-form-field>
+
+      
+        <mat-form-field>
+        <mat-label>PROYECTO</mat-label>
+        <mat-select formControlName="proyecto">
+          <mat-option>
+            <ngx-mat-select-search 
+              [formControl]="proyectoFilterCtrl"
+              placeholderLabel="Buscar proyecto..."
+              noEntriesFoundLabel="'No se encontró ningún proyecto'">
+            </ngx-mat-select-search>
+          </mat-option>
+
+          <mat-optgroup *ngFor="let grupo of (filteredProyectosAgrupados | async)" [label]="grupo.seccion">
+            <mat-option *ngFor="let proyecto of grupo.proyectos" [value]="proyecto">
+              {{ proyecto }}
+            </mat-option>
+          </mat-optgroup>
+        </mat-select>
+        <mat-error>Campo requerido</mat-error>
+      </mat-form-field>
+      
+
+      <mat-form-field>
+        <mat-label>Meta</mat-label>
+        <input matInput formControlName="meta" (blur)="padField('meta', 4)" placeholder="Ej: 4487" />
+        <mat-error>Campo requerido</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Accion Viático</mat-label>
+        <input matInput formControlName="certificacionViatico" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Destino</mat-label>
+        <input matInput formControlName="destino" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Fecha Salida</mat-label>
+        <input
+          matInput
+          [matDatepicker]="pickerSalida"
+          formControlName="fechaSalida"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="pickerSalida"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #pickerSalida></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Fecha Retorno</mat-label>
+        <input
+          matInput
+          [matDatepicker]="pickerRetorno"
+          formControlName="fechaRetorno"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="pickerRetorno"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #pickerRetorno></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="actions-container">
+      <button mat-stroked-button color="warn" type="button" (click)="cancelar()">
+        <mat-icon>cancel</mat-icon>
+        Cancelar
+      </button>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="gastoForm.invalid"
+      >
+        <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+        {{ isEditMode ? 'Actualizar Gasto' : 'Registrar Gasto' }}
+      </button>
+    </div>
+    </form>
+</div>
