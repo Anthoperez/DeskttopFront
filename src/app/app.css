@@ -1,47 +1,98 @@
+/* src/app/app.css */
 .app-container {
   height: 100vh;
   width: 100vw;
+  /* Fondo general más suave */
+  background-color: #f0f2f5; 
 }
 
+/* --- SIDENAV MODERNO --- */
 .app-sidenav {
-  width: 240px;
-  background-color: #f4f6f8;
-  border-right: 1px solid #e0e0e0;
+  width: 260px;
+  background: #ffffff; /* Color oscuro tipo dashboard moderno (Slate) */
+  color: #e2e8f0;
+  border: none;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.05);
 }
 
+/* Toolbar dentro del Sidenav */
 .sidenav-toolbar {
-  background-color: #3f51b5; /* Color primario de Material */
-  color: white;
-  padding: 0 16px;
+  background-color: transparent !important; /* Quitar fondo sólido */
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.2rem;
+  padding: 24px !important;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .sidenav-toolbar mat-icon {
   margin-right: 12px;
+  color: #64b5f6; /* Acento azul claro */
 }
 
-/* Estilos para los elementos de la lista de navegación */
+/* Lista de Navegación */
+.mat-nav-list {
+  padding-top: 10px !important;
+}
+
+.mat-nav-list span {
+  color: #cbd5e1;
+}
 .mat-nav-list a {
-  color: #333;
-  transition: background-color 0.3s ease;
+  color: #94a3b8 !important; /* Texto gris suave */
+  margin: 4px 12px; /* Margen para efecto flotante */
+  border-radius: 8px; /* Bordes redondeados */
+  height: 48px;
+  transition: all 0.2s ease-in-out;
 }
 
 .mat-nav-list a:hover {
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #fff !important;
+  transform: translateX(4px); /* Pequeño movimiento al pasar mouse */
 }
 
-/* Estilo para el enlace que está activo */
+/* Enlace Activo */
 .active-link {
-  background-color: #e8eaf6; /* Un color de acento sutil */
-  color: #3f51b5 !important; /* Color primario */
+  background-color: #3b82f6 !important; /* Azul intenso */
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); /* Sombra brillante */
   font-weight: 500;
 }
 
 .active-link mat-icon {
-  color: #3f51b5 !important;
+  color: #fff !important;
 }
 
-/* Contenedor del contenido principal */
+/* Iconos del menú */
+.mat-nav-list mat-icon {
+  margin-right: 16px;
+}
+
+/* --- CONTENIDO PRINCIPAL --- */
 .app-content {
-  background-color: #fafafa;
-  padding: 24px;
+  background-color: #f0f2f5;
+  padding: 32px;
+  /* Scrollbar personalizada para el contenido */
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f0f2f5;
+}
+
+/* Scrollbar Webkit (Chrome/Electron) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

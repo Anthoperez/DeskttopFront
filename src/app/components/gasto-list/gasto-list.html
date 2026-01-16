@@ -1,32 +1,62 @@
-<mat-card>
-  <mat-card-header>
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <mat-icon style="color: #263238;">table_chart</mat-icon>
+<mat-card class="list-card">
+  <mat-card-header class="list-header">
+    <div class="header-title">
+      <mat-icon>table_chart</mat-icon>
       <mat-card-title>Registro de Gastos</mat-card-title>
     </div>
-
-    <div style="display: flex; align-items: center; gap: 15px;">
-      <mat-form-field class="filter-field" appearance="outline" subscriptSizing="dynamic">
-        <mat-icon matPrefix style="color: #757575; margin-right: 8px;">search</mat-icon>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Buscar por SIAF, Nombre, Concepto..." #input>
-        <button *ngIf="input.value" matSuffix mat-icon-button aria-label="Limpiar" (click)="input.value=''; applyFilter($event)">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
-
-      <button mat-stroked-button color="warn" (click)="eliminarTodos()" class="delete-all-button">
+    
+    <div class="header-actions">
+      <button mat-stroked-button color="warn" (click)="eliminarTodos()">
         <mat-icon>delete_sweep</mat-icon>
         Limpiar Tabla
       </button>
     </div>
   </mat-card-header>
 
-  <mat-card-content class="table-container">
+  <div class="filters-container">
+    
+    <mat-form-field appearance="outline" class="filter-item compact-filter">
+      <mat-label>Mes</mat-label>
+      <mat-select [formControl]="mesFilter">
+        <mat-option value="">Todos</mat-option>
+        <mat-option *ngFor="let mes of meses" [value]="mes">{{ mes }}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
+    <mat-form-field appearance="outline" class="filter-item compact-filter">
+      <mat-label>SIAF</mat-label>
+      <input matInput [formControl]="siafFilter" placeholder="Ej: 4487">
+      <mat-icon matSuffix *ngIf="siafFilter.value" (click)="siafFilter.setValue('')" style="cursor:pointer; font-size:16px;">close</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-item compact-filter">
+      <mat-label>Nº Doc</mat-label>
+      <input matInput [formControl]="numeroFilter" placeholder="Ej: 0580">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-item wide-filter">
+      <mat-label>Proyecto</mat-label>
+      <input matInput [formControl]="proyectoFilter" placeholder="Buscar por nombre de proyecto...">
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-item wide-filter">
+      <mat-label>Búsqueda General</mat-label>
+      <input matInput [formControl]="globalFilter" placeholder="Nombre, concepto, etc...">
+      <mat-icon matPrefix>manage_search</mat-icon>
+    </mat-form-field>
+
+    <button mat-icon-button (click)="clearFilters()" matTooltip="Limpiar filtros" style="color: #64748b;">
+      <mat-icon>filter_alt_off</mat-icon>
+    </button>
+
+  </div>
+
+  <mat-card-content class="table-container">
     <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z0">
 
       <ng-container matColumnDef="tipoDocumento">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> TIPO DOC. </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> DOC </th>
         <td mat-cell *matCellDef="let element"> 
             <span style="font-weight: 500;">{{ element.tipoDocumento }}</span> 
         </td>
@@ -42,11 +72,10 @@
         <td mat-cell *matCellDef="let element"> {{ element.siaf }} </td>
       </ng-container>
 
-      
       <ng-container matColumnDef="aNombreDe">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> A NOMBRE DE </th>
         <td mat-cell *matCellDef="let element">
-          <div class="texto-cortado ancho-medio">
+          <div class="texto-cortado ancho-medio" [matTooltip]="element.aNombreDe">
             {{ element.aNombreDe }}
           </div>
         </td>
@@ -55,7 +84,7 @@
       <ng-container matColumnDef="concepto">
         <th mat-header-cell *matHeaderCellDef> CONCEPTO </th>
         <td mat-cell *matCellDef="let element">
-           <div class="texto-cortado ancho-medio">
+           <div class="texto-cortado ancho-medio" [matTooltip]="element.concepto">
             {{ element.concepto }}
           </div>
         </td>
@@ -109,7 +138,7 @@
       <ng-container matColumnDef="proyecto">
         <th mat-header-cell *matHeaderCellDef> PROYECTO </th>
         <td mat-cell *matCellDef="let element">
-          <div class="texto-cortado ancho-medio">
+          <div class="texto-cortado ancho-medio" [matTooltip]="element.proyecto">
             {{ element.proyecto }}
           </div>
         </td>
@@ -144,10 +173,10 @@
         <th mat-header-cell *matHeaderCellDef style="text-align: center;"> ACCIÓN </th>
         <td mat-cell *matCellDef="let element">
             <div style="display: flex; justify-content: center; gap: 8px; width: 100%;">
-                <button mat-icon-button color="primary" (click)="editarGasto(element)">
+                <button mat-icon-button color="primary" (click)="editarGasto(element)" matTooltip="Editar">
                     <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button color="warn" (click)="eliminarGasto(element.id)">
+                <button mat-icon-button color="warn" (click)="eliminarGasto(element.id)" matTooltip="Eliminar">
                     <mat-icon>delete</mat-icon>
                 </button>
             </div>
@@ -160,46 +189,38 @@
       <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell" [colSpan]="displayedColumns.length" style="text-align: center; padding: 40px; color: #757575;">
           <mat-icon style="font-size: 40px; width: 40px; height: 40px; margin-bottom: 10px;">manage_search</mat-icon>
-          <p>No se encontraron registros para "{{input.value}}"</p>
+          <p>No se encontraron registros con los filtros actuales.</p>
         </td>
       </tr>
 
     </table>
-
   </mat-card-content>
 
-  <mat-paginator [pageSizeOptions]="[15, 25, 50, 100]" showFirstLastButtons
-    style="border-top: 1px solid #e0e0e0; background: #f5f5f5;">
+  <mat-paginator [pageSizeOptions]="[10, 20, 50, 100]" showFirstLastButtons
+    style="border-top: 1px solid #e0e0e0; background: #fff;">
   </mat-paginator>
-
 </mat-card>
 
-<ng-template #confirmDeleteTemplate let-data>
-  <h2 mat-dialog-title>Confirmar Eliminación</h2>
-    <mat-dialog-content>
-      <p>{{ data.mensaje }}</p>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>Cancelar</button>
-      <button mat-raised-button color="warn" [mat-dialog-close]="true">Eliminar</button>
-    </mat-dialog-actions>
-</ng-template>
-
 <ng-template #confirmDeleteAllTemplate>
-    <h2 mat-dialog-title style="color: red;">¡PELIGRO: ELIMINAR TODO!</h2>
+    <h2 mat-dialog-title style="color: #d32f2f; display: flex; align-items: center; gap: 10px;">
+        <mat-icon>warning</mat-icon>
+        ¡PELIGRO: ELIMINAR TODO!
+    </h2>
     <mat-dialog-content>
-      <p>Esta acción es irreversible. Se borrarán <strong>TODOS</strong> los registros de la base de datos.</p>
-      <p>Para confirmar, escribe la palabra <strong>ELIMINAR</strong> abajo:</p>
+      <p style="font-size: 1.1em;">Esta acción es <strong>irreversible</strong>. Se borrarán <strong>TODOS</strong> los registros.</p>
+      <p>Para confirmar, escribe la palabra <strong>ELIMINAR</strong> abajo y presiona ENTER:</p>
       
       <mat-form-field appearance="outline" style="width: 100%;">
         <mat-label>Escribe ELIMINAR</mat-label>
-        <input matInput #confirmInput autocomplete="off">
+        <input matInput #confirmInput autocomplete="off" 
+               (keyup.enter)="onEnterInDeleteDialog(confirmInput.value)">
       </mat-form-field>
     </mat-dialog-content>
   
     <mat-dialog-actions align="end">
       <button mat-button mat-dialog-close>Cancelar</button>
-      <button mat-raised-button color="warn" [mat-dialog-close]="confirmInput.value">
+      <button mat-raised-button color="warn" [mat-dialog-close]="confirmInput.value"
+              [disabled]="confirmInput.value !== 'ELIMINAR'">
         BORRAR TODO
       </button>
     </mat-dialog-actions>

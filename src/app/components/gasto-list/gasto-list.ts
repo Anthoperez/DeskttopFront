@@ -1,39 +1,48 @@
-// src/app/components/gasto-list/gasto-list.component.ts
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+// src/app/components/gasto-list/gasto-list.ts
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService, Gasto } from '../../services/api';
+// Añadir FormControl y ReactiveFormsModule
+import { FormControl, ReactiveFormsModule } from '@angular/forms'; 
 
-
-// --- NUEVAS IMPORTACIONES ---
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog'; // Importar MatDialogRef
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { GastoFormComponent } from '../gasto-form/gasto-form';
+import { MatSelectModule } from '@angular/material/select'; // Añadir Select
 import { MatTooltipModule } from '@angular/material/tooltip';
-// --- FIN DE NUEVAS IMPORTACIONES ---
-
-// Importaciones de Angular Material
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
-
+import { GastoFormComponent } from '../gasto-form/gasto-form';
 
 @Component({
   selector: 'app-gasto-list',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatCardModule, MatButtonModule, MatPaginatorModule, MatFormFieldModule,
-    MatIconModule, MatInputModule, MatSortModule, MatDialogModule, MatSnackBarModule, MatTooltipModule
+  imports: [
+    CommonModule, 
+    MatTableModule, 
+    MatCardModule, 
+    MatButtonModule, 
+    MatPaginatorModule, 
+    MatFormFieldModule,
+    MatIconModule, 
+    MatInputModule, 
+    MatSortModule, 
+    MatDialogModule, 
+    MatSnackBarModule, 
+    MatTooltipModule,
+    MatSelectModule, // Importante para el filtro de mes
+    ReactiveFormsModule // Importante para los filtros
   ],
   templateUrl: './gasto-list.html',
   styleUrls: ['./gasto-list.css']
 })
-export class GastoListComponent implements OnInit{
+export class GastoListComponent implements OnInit {
   dataSource = new MatTableDataSource<Gasto>();
-  // ¡Ahora mostramos todas las columnas!
   displayedColumns: string[] = [
     'tipoDocumento', 'numeroDocumento', 'siaf', 'aNombreDe',
     'concepto', 'monto', 'monto2', 'especifica', 'especifica2', 'ff',
@@ -41,146 +50,177 @@ export class GastoListComponent implements OnInit{
     'certificacionViatico', 'destino', 'fechaSalida', 'fechaRetorno', 'acciones'
   ];
 
-  // Conectamos el paginador y el ordenador de la plantilla
+  // --- FILTROS INDEPENDIENTES ---
+  siafFilter = new FormControl('');
+  mesFilter = new FormControl('');
+  numeroFilter = new FormControl('');
+  proyectoFilter = new FormControl('');
+  globalFilter = new FormControl('');
+
+  // Valores actuales de los filtros
+  filterValues = {
+    siaf: '',
+    mes: '',
+    numeroDocumento: '',
+    proyecto: '',
+    global: ''
+  };
+
+  meses = [
+    'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO',
+    'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE',
+  ];
+
   @ViewChild(MatPaginator) set paginator(paginator: MatPaginator) {
-    if (paginator) {
-      this.dataSource.paginator = paginator;
-    }
+    if (paginator) this.dataSource.paginator = paginator;
   }
-
-  // Hacemos lo mismo para el ordenador (sort)
   @ViewChild(MatSort) set sort(sort: MatSort) {
-    if (sort) {
-      this.dataSource.sort = sort;
-    }
+    if (sort) this.dataSource.sort = sort;
   }
 
-  @ViewChild('confirmDeleteTemplate') confirmDeleteTemplate!: TemplateRef<any>;
-  @ViewChild('confirmDeleteAllTemplate') confirmDeleteAllTemplate!: TemplateRef<any>;
+  // Guardamos referencia al dialogo de borrar todo para poder cerrarlo manualmente
+  private deleteDialogRef: MatDialogRef<any> | null = null;
 
-  constructor(private apiService: ApiService,
-    private dialog: MatDialog,
-    private snackBar: MatSnackBar
-  ) {}
+  constructor(private apiService: ApiService, private dialog: MatDialog, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.cargarGastos();
+    this.setupFilters(); // Configurar lógica de filtros
   }
 
   cargarGastos(): void {
-    console.log('Iniciando carga de gastos...'); // <-- AÑADIR ESTO
     this.apiService.getGastos().subscribe({
       next: (data) => {
-        // --- AÑADIR ESTOS LOGS ---
-        console.log('Datos recibidos de la API:', data);
-        if (data.length === 0) {
-          console.warn('La API devolvió 0 gastos.');
-        }
-        // --- FIN DE LOGS ---
         this.dataSource.data = data;
+        // Reinicializar el filtro custom después de cargar datos
+        this.dataSource.filterPredicate = this.createFilter();
       },
-      error: (err) => {
-        // --- AÑADIR ESTE ERROR ---
-        console.error('¡ERROR AL CARGAR GASTOS DESDE LA API!', err);
-      }
+      error: (err) => console.error(err)
     });
   }
 
-  /**
-   * Aplica el filtro a la tabla.
-   */
-  applyFilter(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  // --- LÓGICA DE FILTROS AVANZADA ---
+  setupFilters() {
+    this.siafFilter.valueChanges.subscribe((val) => {
+      this.filterValues.siaf = val?.trim().toLowerCase() || '';
+      this.dataSource.filter = JSON.stringify(this.filterValues);
+    });
+    this.mesFilter.valueChanges.subscribe((val) => {
+      this.filterValues.mes = val?.trim().toLowerCase() || '';
+      this.dataSource.filter = JSON.stringify(this.filterValues);
+    });
+    this.numeroFilter.valueChanges.subscribe((val) => {
+      this.filterValues.numeroDocumento = val?.trim().toLowerCase() || '';
+      this.dataSource.filter = JSON.stringify(this.filterValues);
+    });
+    this.proyectoFilter.valueChanges.subscribe((val) => {
+      this.filterValues.proyecto = val?.trim().toLowerCase() || '';
+      this.dataSource.filter = JSON.stringify(this.filterValues);
+    });
+    this.globalFilter.valueChanges.subscribe((val) => {
+      this.filterValues.global = val?.trim().toLowerCase() || '';
+      this.dataSource.filter = JSON.stringify(this.filterValues);
+    });
+  }
 
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+  createFilter(): (data: Gasto, filter: string) => boolean {
+    return (data: Gasto, filter: string): boolean => {
+      const searchTerms = JSON.parse(filter);
+
+      // Comprobaciones seguras (evitar nulls)
+      const dataSiaf = data.siaf ? data.siaf.toLowerCase() : '';
+      const dataMes = data.mes ? data.mes.toLowerCase() : '';
+      const dataNumero = data.numeroDocumento ? data.numeroDocumento.toString().toLowerCase() : '';
+      const dataProyecto = data.proyecto ? data.proyecto.toLowerCase() : '';
+      
+      // Para búsqueda global concatenamos todo lo relevante
+      const allData = (
+        dataSiaf + dataMes + dataNumero + dataProyecto + 
+        (data.aNombreDe?.toLowerCase() || '') + 
+        (data.concepto?.toLowerCase() || '')
+      );
+
+      // Lógica AND (deben cumplirse todas las condiciones que tengan texto)
+      const matchSiaf = dataSiaf.indexOf(searchTerms.siaf) !== -1;
+      const matchMes = searchTerms.mes ? dataMes === searchTerms.mes : true; // Mes coincidencia exacta si se selecciona
+      const matchNumero = dataNumero.indexOf(searchTerms.numeroDocumento) !== -1;
+      const matchProyecto = dataProyecto.indexOf(searchTerms.proyecto) !== -1;
+      const matchGlobal = allData.indexOf(searchTerms.global) !== -1;
+
+      return matchSiaf && matchMes && matchNumero && matchProyecto && matchGlobal;
+    };
+  }
+
+  // --- ACCIONES ---
+
+  editarGasto(gasto: Gasto): void {
+    const dialogRef = this.dialog.open(GastoFormComponent, {
+      width: '1000px',
+      maxHeight: '90vh',
+      panelClass: 'gasto-form-dialog',
+      data: gasto
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'updated') this.cargarGastos();
+    });
+  }
+
+  eliminarGasto(id: number): void {
+    if (confirm('¿Deseas eliminar este gasto?')) {
+      this.apiService.deleteGasto(id).subscribe({
+        next: () => {
+          this.showSuccess('Gasto eliminado');
+          this.dataSource.data = this.dataSource.data.filter(g => g.id !== id);
+        },
+        error: (err) => this.showError('Error al eliminar')
+      });
     }
   }
 
-  /**
-   * Abre el diálogo de edición (reutilizando GastoFormComponent).
-   */
-  editarGasto(gasto: Gasto): void {
-    const dialogRef = this.dialog.open(GastoFormComponent, {
-      width: '1000px', // Mismo ancho que el formulario
-      maxHeight: '90vh', // <-- 2. Alto máximo para activar el scroll
-      panelClass: 'gasto-form-dialog', // <-- 3. Clase CSS para estilizarlo
-      data: gasto // Pasamos el gasto completo al diálogo
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      // Si el diálogo se cerró con 'updated', recargamos la lista
-      if (result === 'updated') {
-        this.cargarGastos();
-        this.showSuccess('¡Gasto actualizado con éxito!');
-      }
-    });
-  }
-
-  /**
-   * Elimina un solo gasto, con confirmación.
-   */
-  eliminarGasto(id: number): void {
-    // Abrimos el diálogo usando el template definido en el HTML
-    const dialogRef = this.dialog.open(this.confirmDeleteTemplate, {
-      width: '350px',
-      data: { mensaje: '¿Estás seguro de que deseas eliminar este gasto?' }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      // Si result es true (el usuario dio click en Aceptar)
-      if (result === true) {
-        this.apiService.deleteGasto(id).subscribe({
-          next: () => {
-            this.showSuccess('Gasto eliminado con éxito');
-            this.dataSource.data = this.dataSource.data.filter(g => g.id !== id);
-          },
-          error: (err) => {
-            this.showError('Error al eliminar el gasto');
-            console.error(err);
-          }
-        });
-      }
-    });
-  }
-
-  /**
-   * Elimina TODOS los gastos, con doble confirmación.
-   */
+  // --- LOGICA DE ELIMINAR TODO + FIX ENTER ---
+  
   eliminarTodos(): void {
-    // Abrimos un diálogo más complejo para la confirmación de seguridad
-    const dialogRef = this.dialog.open(this.confirmDeleteAllTemplate, {
-      width: '400px'
-    });
+    // Abrimos el diálogo con referencia
+    this.deleteDialogRef = this.dialog.open(this.confirmDeleteAllTemplate);
 
-    dialogRef.afterClosed().subscribe(result => {
-      // Validamos que el usuario haya escrito la palabra clave (viene del HTML)
+    this.deleteDialogRef.afterClosed().subscribe(result => {
       if (result === 'ELIMINAR') {
-        this.apiService.deleteAllGastos().subscribe({
-          next: () => {
-            this.showSuccess('Todos los gastos han sido eliminados.');
-            this.dataSource.data = [];
-          },
-          error: (err) => {
-            this.showError('Error al eliminar todos los gastos');
-            console.error(err);
-          }
-        });
-      } else if (result) {
-        // Si cerró el diálogo pero escribió mal la palabra (opcional)
-        this.showError('Palabra de confirmación incorrecta. No se eliminó nada.');
+        this.performDeleteAll();
       }
+      this.deleteDialogRef = null;
     });
   }
 
-  // --- Funciones de Notificación ---
-  private showError(message: string): void {
-    this.snackBar.open(message, 'Cerrar', { duration: 5000 });
+  // Función llamada por el evento (keyup.enter) en el HTML
+  onEnterInDeleteDialog(value: string): void {
+    if (value === 'ELIMINAR' && this.deleteDialogRef) {
+      this.deleteDialogRef.close('ELIMINAR');
+    }
   }
 
-  private showSuccess(message: string): void {
-    this.snackBar.open(message, 'Ok', { duration: 3000 });
+  private performDeleteAll(): void {
+    this.apiService.deleteAllGastos().subscribe({
+      next: () => {
+        this.showSuccess('Tabla limpiada correctamente.');
+        this.dataSource.data = [];
+      },
+      error: (err) => this.showError('Error al eliminar datos.')
+    });
   }
 
+  // Necesitamos acceso al template en el TS para pasarlo al dialog.open
+  @ViewChild('confirmDeleteAllTemplate') confirmDeleteAllTemplate: any;
+
+  // --- HELPERS ---
+  private showError(msg: string) { this.snackBar.open(msg, 'Cerrar', { duration: 5000 }); }
+  private showSuccess(msg: string) { this.snackBar.open(msg, 'Ok', { duration: 3000 }); }
+  
+  // Método para limpiar todos los filtros visualmente
+  clearFilters() {
+    this.siafFilter.setValue('');
+    this.mesFilter.setValue('');
+    this.numeroFilter.setValue('');
+    this.proyectoFilter.setValue('');
+    this.globalFilter.setValue('');
+  }
 }

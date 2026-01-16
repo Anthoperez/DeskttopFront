@@ -212,7 +212,8 @@ export class ReportGeneratorComponent implements OnInit {
     }
 
     const dialogRef = this.dialog.open(ReportMetadataDialogComponent, {
-      width: '600px',
+      width: '1200px',
+      maxWidth: '95vw',
       disableClose: true,
     });
 

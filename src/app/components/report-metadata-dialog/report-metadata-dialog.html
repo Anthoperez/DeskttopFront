@@ -1,215 +1,245 @@
-<section class="report-metadata-dialog">
-  <h2 mat-dialog-title>Completar Datos del Reporte (Opcional)</h2>
-  <mat-dialog-content class="dialog-content">
-    <p>Puedes llenar esta información ahora, o dejarla en blanco para llenarla en el Excel.</p>
+<h2 mat-dialog-title>
+  <mat-icon style="color: #3b82f6;">tune</mat-icon>
+  Completar Datos del Reporte
+</h2>
 
-    <form [formGroup]="metadataForm" class="metadata-form">
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="metadataForm">
 
-      <div *ngIf="reportType === 'contrato'">
-        <h3>Datos Específicos del Contrato</h3>
-        
-        <div class="date-duration-grid">
-          <mat-form-field appearance="outline">
-            <mat-label>Año de Ejecución del Reporte</mat-label>
-            <input matInput type="number" formControlName="anio" placeholder="Ej: 2025">
-          </mat-form-field>
-        </div>
-        
+    <div *ngIf="reportType === 'contrato'">
+      <h3>Datos del Contrato</h3>
+      
+      <div class="form-section-grid cols-3">
+        <mat-form-field appearance="outline">
+          <mat-label>Año Ejecución</mat-label>
+          <input matInput type="number" formControlName="anio" placeholder="Ej: 2025">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Código Proyecto</mat-label>
+          <input matInput formControlName="codigoProyecto" placeholder="Ej: INC20-1-P-006-23">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Duración</mat-label>
+          <input matInput formControlName="duracion" placeholder="Ej: 18 meses">
+        </mat-form-field>
+
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Título / Descripción del Proyecto</mat-label>
-          <textarea matInput formControlName="tituloProyecto" rows="3" placeholder='Ej: "INCUBAUNT 2.0 FOMENTANDO STARTUPS..."'></textarea>
+          <textarea matInput formControlName="tituloProyecto" rows="2"></textarea>
         </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Código del Proyecto (Ej: INC20-1-P-006-23)</mat-label>
-          <input matInput formControlName="codigoProyecto">
-        </mat-form-field>
-        <hr>
       </div>
-      
-      <h3>Investigador y Proyecto</h3>
-      <mat-form-field appearance="outline" class="full-width">
+    </div>
+
+    <h3>Información del Investigador</h3>
+    <div class="form-section-grid cols-2">
+      <mat-form-field appearance="outline">
         <mat-label>Nombre del Investigador</mat-label>
         <input matInput formControlName="investigador">
       </mat-form-field>
-      
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Resolución (Ej: R.R. Nº 1825-2024/UNT)</mat-label>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Resolución (R.R.)</mat-label>
         <input matInput formControlName="rr_investigador">
       </mat-form-field>
-      
-      <div class="date-duration-grid">
-        <mat-form-field appearance="outline">
-          <mat-label>Fecha de Inicio</mat-label>
-          <input matInput formControlName="fechaInicio">
-        </mat-form-field>
-      
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Fecha de Culminación</mat-label>
-          <input matInput [matDatepicker]="pickerCulminacion" formControlName="fechaCulminacion" />
-          <mat-datepicker-toggle matSuffix [for]="pickerCulminacion"></mat-datepicker-toggle>
-          <mat-datepicker #pickerCulminacion></mat-datepicker>
-        </mat-form-field>
-      
-        <mat-form-field appearance="outline">
-          <mat-label>Duración (Ej: 18 meses)</mat-label>
-          <input matInput formControlName="duracion">
-        </mat-form-field>
-      </div>
-      
-      <hr>
 
-      <div *ngIf="reportType === 'contrato'">
-        <h3>Descripción de Presupuesto</h3>
-        <div formArrayName="presupuestoEntidades" class="dynamic-presupuesto-grid">
-          <div class="header-cell label-cell">Entidad</div>
-          <div class="header-cell">Aporte No Monetario (Valorizado S/)</div>
-          <div class="header-cell">Aporte Monetario S/</div>
-          <div class="header-cell">Aporte Total S/</div>
-          <div class="header-cell"></div>
-          <ng-container *ngFor="let entidad of presupuestoEntidades.controls; let i = index" [formGroupName]="i">
-            <mat-form-field appearance="outline" class="cell-entidad">
-              <mat-label>Nombre Entidad (Ej: PROCIENCIA)</mat-label>
-              <input matInput formControlName="nombreEntidad" required />
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha Inicio</mat-label>
+        <input matInput formControlName="fechaInicio">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha Culminación</mat-label>
+        <input matInput [matDatepicker]="pickerCulminacion" formControlName="fechaCulminacion" />
+        <mat-datepicker-toggle matSuffix [for]="pickerCulminacion"></mat-datepicker-toggle>
+        <mat-datepicker #pickerCulminacion></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="reportType === 'contrato'">
+      <h3>
+        Estructura de Presupuesto 
+        <span *ngIf="presupuestoEntidades.length > 0" style="font-size: 0.8em; color: #64748b; font-weight: normal; margin-left: 10px;">
+          (Se suman automáticamente)
+        </span>
+      </h3>
+      
+      <div class="embedded-table">
+        <div class="table-header grid-presupuesto">
+          <div style="text-align: left;">Entidad</div>
+          <div>No Monetario (S/)</div>
+          <div>Monetario (S/)</div>
+          <div>Total Fila</div>
+          <div></div>
+        </div>
+
+        <div formArrayName="presupuestoEntidades">
+          <div *ngFor="let entidad of presupuestoEntidades.controls; let i = index" [formGroupName]="i" class="table-row grid-presupuesto">
+            
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <input matInput formControlName="nombreEntidad" placeholder="Nombre Entidad" required />
             </mat-form-field>
       
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <input matInput type="text" formControlName="aporteNoMonetario" placeholder="0.00"
                 (focus)="onCurrencyFocus($event, entidad.get('aporteNoMonetario'))"
                 (blur)="onCurrencyBlur($event, entidad.get('aporteNoMonetario'))" />
             </mat-form-field>
       
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <input matInput type="text" formControlName="aporteMonetario" placeholder="0.00"
                 (focus)="onCurrencyFocus($event, entidad.get('aporteMonetario'))"
                 (blur)="onCurrencyBlur($event, entidad.get('aporteMonetario'))" />
             </mat-form-field>
       
-            <mat-form-field appearance="outline">
-              <input matInput type="text" [value]="
-                  (entidad.get('aporteNoMonetario')?.value || 0) +
-                  (entidad.get('aporteMonetario')?.value || 0) | currency : 'S/ '
-                " readonly placeholder="0.00" class="total-cell" />
-            </mat-form-field>
+            <div class="total-display" style="text-align: center;">
+               {{ ((entidad.get('aporteNoMonetario')?.value || 0) + (entidad.get('aporteMonetario')?.value || 0)) | currency:'S/ ' }}
+            </div>
       
-            <button mat-icon-button color="warn" type="button" (click)="eliminarEntidadPresupuesto(i)"
-              [disabled]="presupuestoEntidades.length <= 1" class="delete-button">
-              <mat-icon>delete_outline</mat-icon>
-            </button>
-          </ng-container>
+            <div class="delete-btn-col">
+              <button mat-icon-button color="warn" type="button" (click)="eliminarEntidadPresupuesto(i)"
+                [disabled]="presupuestoEntidades.length <= 1" matTooltip="Eliminar fila">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+
+          </div>
         </div>
-      
-        <button mat-stroked-button color="primary" type="button" (click)="agregarEntidadPresupuesto()" class="full-width"
-          style="margin-bottom: 16px">
-          <mat-icon>add</mat-icon>
-          Añadir Fila de Presupuesto
-        </button>
       </div>
       
-      <div *ngIf="reportType === 'pic'">
-        <h3>Presupuesto Total (PIC)</h3>
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Presupuesto Total Asignado</mat-label>
-          <input matInput type="text" formControlName="presupuestoTotalPic" placeholder="0.00"
-            (focus)="onCurrencyFocus($event, metadataForm.get('presupuestoTotalPic'))"
-            (blur)="onCurrencyBlur($event, metadataForm.get('presupuestoTotalPic'))" />
-        </mat-form-field>
-      </div>
-      <hr />
+      <button mat-button color="primary" type="button" (click)="agregarEntidadPresupuesto()">
+        <mat-icon>add_circle_outline</mat-icon> Añadir Entidad
+      </button>
+    </div>
 
-      <h3>Sección de Ingresos</h3>
+    <div *ngIf="reportType === 'pic'">
+      <h3>Presupuesto PIC</h3>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Presupuesto Total Asignado</mat-label>
+        <input matInput type="text" formControlName="presupuestoTotalPic" placeholder="0.00"
+          (focus)="onCurrencyFocus($event, metadataForm.get('presupuestoTotalPic'))"
+          (blur)="onCurrencyBlur($event, metadataForm.get('presupuestoTotalPic'))" />
+      </mat-form-field>
+    </div>
+
+    <h3>Ingresos / Transferencias</h3>
+    <div class="embedded-table">
+      <div class="table-header grid-ingresos">
+        <div style="text-align: left;">Descripción (Ej: R.R Nº...)</div>
+        <div>Monto (S/)</div>
+        <div></div>
+      </div>
+
       <div formArrayName="ingresos">
-        <div *ngFor="let ingreso of ingresos.controls; let i=index" [formGroupName]="i" class="ingreso-row">
-
-          <mat-form-field appearance="outline" class="ingreso-desc">
-            <mat-label>Descripción del Ingreso (Ej: R.R Nº...)</mat-label>
-            <textarea matInput formControlName="descripcion" rows="2"></textarea> </mat-form-field>
-
-          <mat-form-field appearance="outline" class="ingreso-monto">
-            <mat-label>Monto</mat-label>
-            <input matInput type="text" formControlName="monto" (focus)="onCurrencyFocus($event, ingreso.get('monto'))"
-            (blur)="onCurrencyBlur($event, ingreso.get('monto'))">
+        <div *ngFor="let ingreso of ingresos.controls; let i=index" [formGroupName]="i" class="table-row grid-ingresos">
+          
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <input matInput formControlName="descripcion" placeholder="Descripción del ingreso" />
           </mat-form-field>
 
-          <button mat-icon-button color="warn" (click)="eliminarIngreso(i)" type="button">
-            <mat-icon>delete_outline</mat-icon>
-          </button>
-        </div>
-      </div>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <input matInput type="text" formControlName="monto" placeholder="0.00"
+                   (focus)="onCurrencyFocus($event, ingreso.get('monto'))"
+                   (blur)="onCurrencyBlur($event, ingreso.get('monto'))">
+          </mat-form-field>
 
-      <button mat-stroked-button color="primary" type="button" (click)="agregarIngreso()">
-        <mat-icon>add</mat-icon>
-        Añadir Fila de Ingreso
-      </button>
-
-      <hr>
-
-      <h3>Ejecución de Gastos - Año Anteriores</h3>
-      <div formArrayName="gastosAnosAnteriores">
-
-        <div *ngFor="let gastoGroup of gastosAnosAnteriores.controls; let i = index" [formGroupName]="i"
-          class="gastos-anterior-grid-dinamico">
-          <div class="gastos-anterior-header">
-            <mat-form-field appearance="outline" class="gasto-anterior-year">
-              <mat-label>Año</mat-label>
-              <input matInput type="number" formControlName="year" required>
-              <mat-error *ngIf="gastoGroup.get('year')?.hasError('required')">
-                El año es requerido.
-              </mat-error>
-            </mat-form-field>
-            <button mat-icon-button color="warn" type="button" (click)="eliminarGastoAnoAnterior(i)"
-              [disabled]="gastosAnosAnteriores.length <= 1">
-              <mat-icon>delete_outline</mat-icon>
+          <div class="delete-btn-col">
+            <button mat-icon-button color="warn" (click)="eliminarIngreso(i)" type="button">
+              <mat-icon>delete</mat-icon>
             </button>
           </div>
 
-          <div class="gastos-anterior-grid">
-            <mat-form-field appearance="outline">
-              <mat-label>Bienes Corrientes</mat-label>
-              <input matInput type="number" formControlName="bienesCorrientes">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Bienes Capital</mat-label>
-              <input matInput type="number" formControlName="bienesCapital">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Servicios</mat-label>
-              <input matInput type="number" formControlName="servicios">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Subvención</mat-label>
-              <input matInput type="number" formControlName="subvencion">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Viáticos</mat-label>
-              <input matInput type="number" formControlName="viaticos">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Encargo Interno</mat-label>
-              <input matInput type="number" formControlName="encargoInterno">
-            </mat-form-field>
-          </div>
-
-          <hr *ngIf="i < gastosAnosAnteriores.controls.length - 1">
         </div>
       </div>
-
-      <button mat-stroked-button color="primary" type="button" (click)="agregarGastoAnoAnterior()" class="full-width"
-        style="margin-top: 16px;">
-        <mat-icon>add</mat-icon>
-        Añadir Fila de Año Anterior
-      </button>
-         
-    </form>
-
-  </mat-dialog-content>
-
-  <mat-dialog-actions align="end">
-    <button mat-button type="button" (click)="dialogRef.close(undefined)">Cancelar</button>
-
-    <button mat-button type="button" (click)="onOmitir()">Omitir y Generar</button>
-
-    <button mat-raised-button color="accent" type="button" (click)="onGenerar()"> Generar Reporte con Datos
+    </div>
+    <button mat-button color="primary" type="button" (click)="agregarIngreso()">
+      <mat-icon>add_circle_outline</mat-icon> Añadir Ingreso
     </button>
-  </mat-dialog-actions>
-</section>
+
+
+    <h3>Ejecución Años Anteriores</h3>
+    <p style="font-size: 0.9em; color: #64748b; margin-top: -10px; margin-bottom: 10px;">
+        Ingrese los montos acumulados por categoría para cada año previo.
+    </p>
+
+    <div class="embedded-table">
+      <div class="table-header grid-gastos-ant">
+        <div>Año</div>
+        <div>B. Corrientes</div>
+        <div>B. Capital</div>
+        <div>Servicios</div>
+        <div>Subvención</div>
+        <div>Viáticos</div>
+        <div>Encargo</div>
+        <div></div>
+      </div>
+
+      <div formArrayName="gastosAnosAnteriores">
+        <div *ngFor="let gastoGroup of gastosAnosAnteriores.controls; let i = index" [formGroupName]="i" class="table-row grid-gastos-ant">
+          
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <input matInput type="number" formControlName="year" placeholder="2024" style="text-align: center; font-weight: bold;">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <input matInput type="text" formControlName="bienesCorrientes" placeholder="0.00"
+              (focus)="onCurrencyFocus($event, gastoGroup.get('bienesCorrientes'))"
+              (blur)="onCurrencyBlur($event, gastoGroup.get('bienesCorrientes'))">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <input matInput type="text" formControlName="bienesCapital" placeholder="0.00"
+              (focus)="onCurrencyFocus($event, gastoGroup.get('bienesCapital'))"
+              (blur)="onCurrencyBlur($event, gastoGroup.get('bienesCapital'))">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <input matInput type="text" formControlName="servicios" placeholder="0.00"
+              (focus)="onCurrencyFocus($event, gastoGroup.get('servicios'))"
+              (blur)="onCurrencyBlur($event, gastoGroup.get('servicios'))">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <input matInput type="text" formControlName="subvencion" placeholder="0.00"
+              (focus)="onCurrencyFocus($event, gastoGroup.get('subvencion'))"
+              (blur)="onCurrencyBlur($event, gastoGroup.get('subvencion'))">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <input matInput type="text" formControlName="viaticos" placeholder="0.00"
+              (focus)="onCurrencyFocus($event, gastoGroup.get('viaticos'))"
+              (blur)="onCurrencyBlur($event, gastoGroup.get('viaticos'))">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <input matInput type="text" formControlName="encargoInterno" placeholder="0.00"
+              (focus)="onCurrencyFocus($event, gastoGroup.get('encargoInterno'))"
+              (blur)="onCurrencyBlur($event, gastoGroup.get('encargoInterno'))">
+          </mat-form-field>
+
+          <div class="delete-btn-col">
+            <button mat-icon-button color="warn" type="button" (click)="eliminarGastoAnoAnterior(i)" 
+                    [disabled]="gastosAnosAnteriores.length <= 1">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    
+    <button mat-button color="primary" type="button" (click)="agregarGastoAnoAnterior()">
+      <mat-icon>add_circle_outline</mat-icon> Añadir Año
+    </button>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" style="padding: 16px 24px;">
+  <button mat-button (click)="dialogRef.close(undefined)">Cancelar</button>
+  <button mat-button (click)="onOmitir()" style="color: #64748b;">Omitir Datos</button>
+  <button mat-raised-button color="primary" (click)="onGenerar()">
+    <mat-icon>save_alt</mat-icon> Generar Reporte
+  </button>
+</mat-dialog-actions>

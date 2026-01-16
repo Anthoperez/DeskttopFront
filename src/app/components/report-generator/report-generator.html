@@ -1,210 +1,171 @@
-<mat-card class="report-generator-card">
-  <mat-card-header>
-    <mat-card-title>Generador de Reportes</mat-card-title>
-    <mat-card-subtitle
-      >Selecciona el tipo de reporte que deseas generar</mat-card-subtitle
-    >
-  </mat-card-header>
+<div class="report-container">
+  
+  <header class="page-header">
+    <h1>
+      <mat-icon style="color: #3b82f6; width: 32px; height: 32px; font-size: 32px;">assessment</mat-icon>
+      Generador de Reportes
+    </h1>
+    <p>Selecciona el tipo de informe y configura los parámetros de exportación.</p>
+  </header>
 
-  <mat-card-content class="card-content">
+  <div class="types-grid">
     
-    <mat-button-toggle-group
-      [(ngModel)]="reportType"
-      class="report-toggle-group"
-      aria-label="Tipo de Reporte"
-    >
-      <mat-button-toggle value="contrato">Por Contrato</mat-button-toggle>
-      <mat-button-toggle value="pic">Por PIC</mat-button-toggle>
-      <mat-button-toggle value="meta">Por Meta (Global)</mat-button-toggle>
-      <mat-button-toggle value="project-simple">Por Mes</mat-button-toggle>
-    </mat-button-toggle-group>
-    <div *ngIf="reportType === 'contrato'">
+    <div class="type-card" [class.active]="reportType === 'contrato'" (click)="reportType = 'contrato'">
+      <mat-icon>description</mat-icon>
+      <h3>Por Contrato</h3>
+      <p>Reporte detallado con hojas mensuales y consolidado específico.</p>
+    </div>
+
+    <div class="type-card" [class.active]="reportType === 'pic'" (click)="reportType = 'pic'">
+      <mat-icon>science</mat-icon>
+      <h3>Por PIC</h3>
+      <p>Agrupa proyectos por modalidad y categorías científicas.</p>
+    </div>
+
+    <div class="type-card" [class.active]="reportType === 'meta'" (click)="reportType = 'meta'">
+      <mat-icon>account_balance</mat-icon>
+      <h3>Por Meta (Global)</h3>
+      <p>Volcado total de la base de datos separado por código de Meta.</p>
+    </div>
+
+    <div class="type-card" [class.active]="reportType === 'project-simple'" (click)="reportType = 'project-simple'">
+      <mat-icon>calendar_month</mat-icon>
+      <h3>Por Mes / Proyecto</h3>
+      <p>Reporte simple de ejecución mensual o anual de un proyecto.</p>
+    </div>
+
+  </div>
+
+  <div class="config-panel">
+
+    <div *ngIf="reportType === 'contrato'" class="action-content">
+      <div class="config-title">
+        <mat-icon>tune</mat-icon> Configuración de Contrato
+      </div>
+
       <div *ngIf="isLoadingContratos" class="state-container">
-        <mat-spinner diameter="50"></mat-spinner>
-        <p>Cargando contratos...</p>
+        <mat-spinner diameter="40"></mat-spinner>
+        <p style="margin-top:10px">Cargando lista de contratos...</p>
       </div>
 
-      <div
-        *ngIf="!isLoadingContratos && contratoProjects.length === 0"
-        class="state-container empty-state"
-      >
+      <div *ngIf="!isLoadingContratos && contratoProjects.length === 0" class="state-container">
         <mat-icon class="empty-icon">folder_off</mat-icon>
-        <h3>No hay Contratos disponibles</h3>
-        <p>Agregue gastos a un proyecto de Contrato para que aparezca aquí.</p>
+        <h3>No hay contratos disponibles</h3>
+        <p>Registra gastos asociados a un contrato para verlos aquí.</p>
       </div>
 
-      <div
-        *ngIf="!isLoadingContratos && contratoProjects.length > 0"
-        class="action-container"
-      >
-        <div class="logo">📊</div>
-
-        <p class="instruction-text">
-          Elige el Contrato del cual deseas obtener el reporte.
-        </p>
-
-        <mat-form-field appearance="outline" class="project-selector">
+      <div *ngIf="!isLoadingContratos && contratoProjects.length > 0">
+        <mat-form-field appearance="outline" class="full-width">
           <mat-label>Seleccionar Contrato</mat-label>
-          <mat-icon matPrefix>topic</mat-icon>
           <mat-select [(ngModel)]="selectedContratoProject">
             <mat-option *ngFor="let project of contratoProjects" [value]="project">
               {{ project }}
             </mat-option>
           </mat-select>
+          <mat-icon matPrefix style="margin-right: 8px; color: #64748b">folder_shared</mat-icon>
         </mat-form-field>
 
-        <button
-          mat-raised-button
-          color="accent"
-          class="generate-button"
+        <button mat-raised-button color="primary" class="full-width generate-btn"
           [disabled]="!selectedContratoProject || isGenerating"
-          (click)="generateContratoReport()"
-        >
+          (click)="generateContratoReport()">
+          
           <ng-container *ngIf="!isGenerating">
-            <mat-icon>download</mat-icon>
-            Generar Reporte de Contrato
+            <mat-icon>download</mat-icon> Descargar Reporte
           </ng-container>
-
+          
           <ng-container *ngIf="isGenerating">
-            <mat-progress-spinner
-              mode="indeterminate"
-              diameter="24"
-            ></mat-progress-spinner>
-            <span>Generando...</span>
-          </ng-container>
-        </button>
-      </div>
-    </div>
-    
-
-    <div *ngIf="reportType === 'pic'">
-      
-      <div
-        *ngIf="!isLoadingPics && modalidadesPIC.length > 0"
-        class="action-container"
-      >
-        <div class="logo">📊</div>
-        <p class="instruction-text">
-          Elige el grupo de PICs del cual deseas obtener el reporte.
-          <br>
-          <small>(Selecciona cualquier PIC de la Modalidad/Convocatoria)</small>
-        </p>
-
-        <mat-form-field appearance="outline" class="project-selector">
-          <mat-label>Seleccionar Modalidad PIC</mat-label>
-          <mat-icon matPrefix>topic</mat-icon>
-          <mat-select [(ngModel)]="selectedPicProject">
-            <mat-option *ngFor="let mod of modalidadesPIC" [value]="mod">
-              {{ mod }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <button
-          mat-raised-button
-          color="accent"
-          class="generate-button"
-          [disabled]="!selectedPicProject || isGenerating"
-          (click)="generatePicReport()"
-        >
-          <ng-container *ngIf="!isGenerating">
-            <mat-icon>download</mat-icon>
-            Generar Reporte PIC
-          </ng-container>
-          <ng-container *ngIf="isGenerating">
-            <mat-progress-spinner mode="indeterminate" diameter="24"></mat-progress-spinner>
-            <span>Generando...</span>
-          </ng-container>
-        </button>
-      </div>
-    </div>
-    
-
-
-
-    <div *ngIf="reportType === 'meta'">
-      <div class="action-container">
-        <div class="logo">📊</div>
-
-        <p class="instruction-text">
-          Se generará un reporte global con todos los gastos de la base de datos,
-          separados en hojas de Excel por cada código de Meta.
-        </p>
-
-        <button
-          mat-raised-button
-          color="accent"
-          class="generate-button"
-          [disabled]="isGenerating"
-          (click)="generateMetaReport()"
-        >
-          <ng-container *ngIf="!isGenerating">
-            <mat-icon>download</mat-icon>
-            Generar Reporte por Meta
-          </ng-container>
-
-          <ng-container *ngIf="isGenerating">
-            <mat-progress-spinner
-              mode="indeterminate"
-              diameter="24"
-            ></mat-progress-spinner>
-            <span>Generando...</span>
+            <mat-spinner diameter="20" style="display:inline-block; margin-right:8px"></mat-spinner>
+            Procesando...
           </ng-container>
         </button>
       </div>
     </div>
 
-    <div *ngIf="reportType === 'project-simple'">
-      <div class="action-container">
-        <div class="logo">📊</div>
-        
-        <p class="instruction-text">
-          Selecciona un proyecto y opcionalmente un mes específico.
-        </p>
-
-        <!-- Selector de Proyecto -->
-        <mat-form-field appearance="outline" class="project-selector">
-          <mat-label>Seleccionar Proyecto</mat-label>
-          <mat-icon matPrefix>topic</mat-icon>
-          <mat-select [(ngModel)]="selectedSimpleProject">
-            <mat-option *ngFor="let project of allProjects" [value]="project">
-              {{ project }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <!-- Selector de Mes (Opcional) -->
-        <mat-form-field appearance="outline" class="project-selector">
-          <mat-label>Mes (Opcional - Dejar vacío para reporte anual)</mat-label>
-          <mat-icon matPrefix>calendar_month</mat-icon>
-          <mat-select [(ngModel)]="selectedMonth">
-            <mat-option [value]="null">Todos los meses</mat-option>
-            <mat-option *ngFor="let month of meses" [value]="month">
-              {{ month }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <!-- Botón Generar -->
-        <button
-          mat-raised-button
-          color="accent"
-          class="generate-button"
-          [disabled]="!selectedSimpleProject || isGenerating"
-          (click)="generateSimpleProjectReport()"
-        >
-          <ng-container *ngIf="!isGenerating">
-            <mat-icon>download</mat-icon>
-            {{ selectedMonth ? 'Generar Reporte Mensual' : 'Generar Reporte Anual' }}
-          </ng-container>
-
-          <ng-container *ngIf="isGenerating">
-            <mat-progress-spinner mode="indeterminate" diameter="24"></mat-progress-spinner>
-            <span>Generando...</span>
-          </ng-container>
-        </button>
+    <div *ngIf="reportType === 'pic'" class="action-content">
+      <div class="config-title">
+        <mat-icon>tune</mat-icon> Configuración de PIC
       </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Modalidad / Convocatoria</mat-label>
+        <mat-select [(ngModel)]="selectedPicProject">
+          <mat-option *ngFor="let mod of modalidadesPIC" [value]="mod">
+            {{ mod }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix style="margin-right: 8px; color: #64748b">category</mat-icon>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" class="full-width generate-btn"
+        [disabled]="!selectedPicProject || isGenerating"
+        (click)="generatePicReport()">
+        <ng-container *ngIf="!isGenerating">
+          <mat-icon>download</mat-icon> Descargar Reporte PIC
+        </ng-container>
+        <ng-container *ngIf="isGenerating">
+          <mat-spinner diameter="20" style="display:inline-block; margin-right:8px"></mat-spinner>
+          Generando...
+        </ng-container>
+      </button>
     </div>
 
-    </mat-card-content>
-</mat-card>
+    <div *ngIf="reportType === 'meta'" class="action-content state-container">
+      <mat-icon style="font-size: 48px; height: 48px; width: 48px; color: #3b82f6; margin-bottom: 16px;">domain</mat-icon>
+      <h3 style="color: #334155; margin:0">Reporte Global por Meta</h3>
+      <p style="margin-bottom: 24px;">Se generará un archivo Excel con una hoja independiente para cada Meta encontrada en la base de datos.</p>
+
+      <button mat-raised-button color="primary" class="full-width generate-btn"
+        [disabled]="isGenerating"
+        (click)="generateMetaReport()">
+        <ng-container *ngIf="!isGenerating">
+          <mat-icon>download</mat-icon> Generar Reporte Global
+        </ng-container>
+        <ng-container *ngIf="isGenerating">
+          <mat-spinner diameter="20" style="display:inline-block; margin-right:8px"></mat-spinner>
+          Procesando...
+        </ng-container>
+      </button>
+    </div>
+
+    <div *ngIf="reportType === 'project-simple'" class="action-content">
+      <div class="config-title">
+        <mat-icon>tune</mat-icon> Reporte Mensual Simple
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Proyecto</mat-label>
+        <mat-select [(ngModel)]="selectedSimpleProject">
+          <mat-option *ngFor="let project of allProjects" [value]="project">
+            {{ project }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix style="margin-right: 8px; color: #64748b">folder</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Mes (Opcional - Vacío para Anual)</mat-label>
+        <mat-select [(ngModel)]="selectedMonth">
+          <mat-option [value]="null">-- Todo el Año --</mat-option>
+          <mat-option *ngFor="let month of meses" [value]="month">
+            {{ month }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix style="margin-right: 8px; color: #64748b">calendar_today</mat-icon>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" class="full-width generate-btn"
+        [disabled]="!selectedSimpleProject || isGenerating"
+        (click)="generateSimpleProjectReport()">
+        <ng-container *ngIf="!isGenerating">
+          <mat-icon>download</mat-icon> 
+          {{ selectedMonth ? 'Descargar Mes' : 'Descargar Anual' }}
+        </ng-container>
+        <ng-container *ngIf="isGenerating">
+          <mat-spinner diameter="20" style="display:inline-block; margin-right:8px"></mat-spinner>
+          Generando...
+        </ng-container>
+      </button>
+    </div>
+
+  </div>
+</div>
