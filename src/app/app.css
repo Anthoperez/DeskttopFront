@@ -1,98 +1,135 @@
 /* src/app/app.css */
+
+/* --- 1. LAYOUT PRINCIPAL --- */
 .app-container {
   height: 100vh;
   width: 100vw;
-  /* Fondo general más suave */
-  background-color: #f0f2f5; 
+  background-color: #f1f5f9; /* Fondo gris claro para el contenido */
 }
 
-/* --- SIDENAV MODERNO --- */
+/* --- 2. BARRA LATERAL (ESTRUCTURA) --- */
 .app-sidenav {
   width: 260px;
-  background: #ffffff; /* Color oscuro tipo dashboard moderno (Slate) */
-  color: #e2e8f0;
-  border: none;
-  box-shadow: 4px 0 24px rgba(0,0,0,0.05);
+  background-color: #0f172a; /* Gris Oscuro Profundo (Slate 900) */
+  border-right: 1px solid #1e293b;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 15px rgba(0,0,0,0.1);
 }
 
-/* Toolbar dentro del Sidenav */
-.sidenav-toolbar {
-  background-color: transparent !important; /* Quitar fondo sólido */
-  color: #fff;
-  font-weight: 700;
-  font-size: 1.2rem;
-  padding: 24px !important;
-  margin-bottom: 10px;
+/* Quitar padding default de material si existe */
+.mat-drawer-inner-container {
+  overflow: hidden !important; 
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- 3. ENCABEZADO (LOGO) --- */
+.sidebar-header {
+  height: 80px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 0 24px;
+  border-bottom: 1px solid #1e293b; /* Linea divisoria sutil */
+  margin-bottom: 16px;
 }
 
-.sidenav-toolbar mat-icon {
+.logo-icon {
+  background: #3b82f6; /* Azul brillante */
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-right: 12px;
-  color: #64b5f6; /* Acento azul claro */
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
 }
 
-/* Lista de Navegación */
-.mat-nav-list {
-  padding-top: 10px !important;
+.logo-icon mat-icon {
+  color: white;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
 }
 
-.mat-nav-list span {
-  color: #cbd5e1;
+.app-title {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: #ffffff; /* Texto Blanco */
+  letter-spacing: 0.5px;
 }
-.mat-nav-list a {
-  color: #94a3b8 !important; /* Texto gris suave */
-  margin: 4px 12px; /* Margen para efecto flotante */
-  border-radius: 8px; /* Bordes redondeados */
+
+/* --- 4. MENÚ DE NAVEGACIÓN --- */
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px;
+  flex-grow: 1; /* Ocupa el espacio disponible */
+}
+
+/* ESTILO DEL ITEM (ENLACE) */
+.menu-item {
+  display: flex;
+  align-items: center;
   height: 48px;
-  transition: all 0.2s ease-in-out;
-}
-
-.mat-nav-list a:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: #fff !important;
-  transform: translateX(4px); /* Pequeño movimiento al pasar mouse */
-}
-
-/* Enlace Activo */
-.active-link {
-  background-color: #3b82f6 !important; /* Azul intenso */
-  color: #fff !important;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); /* Sombra brillante */
+  padding: 0 16px;
+  margin-bottom: 4px;
+  border-radius: 8px; /* Bordes redondeados */
+  
+  text-decoration: none; /* Quitar subrayado */
+  color: #94a3b8; /* Texto gris claro (inactivo) */
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
   font-weight: 500;
+  
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
 }
 
-.active-link mat-icon {
-  color: #fff !important;
+.menu-item mat-icon {
+  margin-right: 12px;
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+  color: #64748b; /* Icono gris */
+  transition: all 0.2s;
 }
 
-/* Iconos del menú */
-.mat-nav-list mat-icon {
-  margin-right: 16px;
+/* HOVER (Cuando pasas el mouse) */
+.menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.05); /* Fondo blanco tenue */
+  color: #f8fafc; /* Texto casi blanco */
 }
 
-/* --- CONTENIDO PRINCIPAL --- */
+.menu-item:hover mat-icon {
+  color: #cbd5e1; /* Icono más claro */
+}
+
+/* ACTIVE (Elemento seleccionado) */
+.menu-item.active {
+  background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%); /* Azul degradado */
+  color: #ffffff; /* Texto Blanco Puro */
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4); /* Sombra azul brillante */
+}
+
+.menu-item.active mat-icon {
+  color: #ffffff; /* Icono Blanco Puro */
+}
+
+/* --- 5. FOOTER (Opcional) --- */
+.sidebar-footer {
+  padding: 16px;
+  text-align: center;
+  color: #475569;
+  font-size: 12px;
+  border-top: 1px solid #1e293b;
+}
+
+/* --- 6. CONTENIDO DERECHO --- */
 .app-content {
-  background-color: #f0f2f5;
-  padding: 32px;
-  /* Scrollbar personalizada para el contenido */
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 #f0f2f5;
-}
-
-/* Scrollbar Webkit (Chrome/Electron) */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  padding: 24px;
+  height: 100vh;
+  box-sizing: border-box;
 }
