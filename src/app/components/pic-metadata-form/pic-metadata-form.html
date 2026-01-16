@@ -1,4 +1,4 @@
-<div class= "pic-form-container">
+<div class="pic-form-container">
     <mat-card>
         <mat-card-header>
             <mat-card-title>Configurar Metadatos de Proyectos PIC</mat-card-title>
@@ -33,45 +33,59 @@
             <form [formGroup]="metadataForm" *ngIf="!isPageLoading && selectedProject.value">
 
                 <h3>Datos Generales del Proyecto</h3>
+
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Título del Proyecto (Opcional - Sobreescribe el default)</mat-label>
+                    <textarea matInput formControlName="tituloProyecto" rows="2"></textarea>
+                </mat-form-field>
+
                 <div class="form-grid">
                     <mat-form-field appearance="outline">
-                        <mat-label>Investigador</mat-label>
+                        <mat-label>Código Adicional (Ej: INC20...)</mat-label>
+                        <input matInput formControlName="codigoProyecto">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Resolución (Ej: R.R. N°...)</mat-label>
+                        <input matInput formControlName="resolucion">
+                    </mat-form-field>
+                </div>
+
+                <hr>
+
+                <div class="form-grid">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Investigador Responsable</mat-label>
                         <input matInput formControlName="investigador">
                     </mat-form-field>
 
+                    <mat-form-field appearance="outline">
+                        <mat-label>Facultad / Escuela</mat-label>
+                        <input matInput formControlName="facultad" placeholder="Ej: Farmacia y Bioquímica">
+                    </mat-form-field>
+                </div>
+
+                <div class="form-grid">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Tesista (Opcional - Modalidad 2)</mat-label>
+                        <input matInput formControlName="tesista" placeholder="Nombre del tesista">
+                        <mat-hint>Llenar solo si aplica</mat-hint>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Asesor (Opcional - Modalidad 2)</mat-label>
+                        <input matInput formControlName="asesor" placeholder="Nombre del asesor">
+                        <mat-hint>Llenar solo si aplica</mat-hint>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-grid">
                     <mat-form-field appearance="outline">
                         <mat-label>Duración (Ej: 24 Meses)</mat-label>
                         <input matInput formControlName="duracion">
                     </mat-form-field>
                 </div>
-                <div class="form-grid">
-                    <mat-form-field appearance="outline">
-                        <mat-label>Tesista (Opcional - Modalidad 2)</mat-label>
-                        <input matInput formControlName="tesista" placeholder="Nombre del tesista">
-                        <mat-hint>Llenar solo si aplica</mat-hint>
-                    </mat-form-field>
-                
-                    <mat-form-field appearance="outline">
-                        <mat-label>Asesor (Opcional - Modalidad 2)</mat-label>
-                        <input matInput formControlName="asesor" placeholder="Nombre del asesor">
-                        <mat-hint>Llenar solo si aplica</mat-hint>
-                    </mat-form-field>
-                </div>
 
-                <div class="form-grid">
-                    <mat-form-field appearance="outline">
-                        <mat-label>Tesista (Opcional - Modalidad 2)</mat-label>
-                        <input matInput formControlName="tesista" placeholder="Nombre del tesista">
-                        <mat-hint>Llenar solo si aplica</mat-hint>
-                    </mat-form-field>
-                
-                    <mat-form-field appearance="outline">
-                        <mat-label>Asesor (Opcional - Modalidad 2)</mat-label>
-                        <input matInput formControlName="asesor" placeholder="Nombre del asesor">
-                        <mat-hint>Llenar solo si aplica</mat-hint>
-                    </mat-form-field>
-                </div>
-                
                 <hr>
 
                 <h3>Presupuesto</h3>
@@ -126,37 +140,37 @@
                         </div>
 
                         <div class="gasto-grid">
-                            <mat-form-field appearance="outline" class="full-width">
+                            <mat-form-field appearance="outline">
                                 <mat-label>Bienes Corrientes</mat-label>
                                 <input matInput type="text" formControlName="bienesCorrientes" placeholder="0.00"
                                     (focus)="onCurrencyFocus($event, gastoGroup.get('bienesCorrientes'))"
                                     (blur)="onCurrencyBlur($event, gastoGroup.get('bienesCorrientes'))">
                             </mat-form-field>
-                            <mat-form-field appearance="outline" class="full-width">
+                            <mat-form-field appearance="outline">
                                 <mat-label>Bienes Capital</mat-label>
                                 <input matInput type="text" formControlName="bienesCapital" placeholder="0.00"
                                     (focus)="onCurrencyFocus($event, gastoGroup.get('bienesCapital'))"
                                     (blur)="onCurrencyBlur($event, gastoGroup.get('bienesCapital'))">
                             </mat-form-field>
-                            <mat-form-field appearance="outline" class="full-width">
+                            <mat-form-field appearance="outline">
                                 <mat-label>Servicios</mat-label>
                                 <input matInput type="text" formControlName="servicios" placeholder="0.00"
                                     (focus)="onCurrencyFocus($event, gastoGroup.get('servicios'))"
                                     (blur)="onCurrencyBlur($event, gastoGroup.get('servicios'))">
                             </mat-form-field>
-                            <mat-form-field appearance="outline" class="full-width">
+                            <mat-form-field appearance="outline">
                                 <mat-label>Subvención</mat-label>
                                 <input matInput type="text" formControlName="subvencion" placeholder="0.00"
                                     (focus)="onCurrencyFocus($event, gastoGroup.get('subvencion'))"
                                     (blur)="onCurrencyBlur($event, gastoGroup.get('subvencion'))">
                             </mat-form-field>
-                            <mat-form-field appearance="outline" class="full-width">
+                            <mat-form-field appearance="outline">
                                 <mat-label>Viáticos</mat-label>
                                 <input matInput type="text" formControlName="viaticos" placeholder="0.00"
                                     (focus)="onCurrencyFocus($event, gastoGroup.get('viaticos'))"
                                     (blur)="onCurrencyBlur($event, gastoGroup.get('viaticos'))">
                             </mat-form-field>
-                            <mat-form-field appearance="outline" class="full-width">
+                            <mat-form-field appearance="outline">
                                 <mat-label>Encargo Interno</mat-label>
                                 <input matInput type="text" formControlName="encargoInterno" placeholder="0.00"
                                     (focus)="onCurrencyFocus($event, gastoGroup.get('encargoInterno'))"
@@ -166,36 +180,37 @@
 
                     </div>
                 </div>
-                <button mat-stroked-button color="primary" type="button" (click)="agregarGastoAnoAnterior()" class="full-width">
+                <button mat-stroked-button color="primary" type="button" (click)="agregarGastoAnoAnterior()"
+                    class="full-width">
                     <mat-icon>add</mat-icon> Añadir Fila de Año Anterior
                 </button>
-                </form>
-                </mat-card-content>
-                
-                <mat-card-actions align="end">
-                    <button mat-raised-button color="accent"
-                        [disabled]="saveState !== 'idle' || isPageLoading || metadataForm.invalid || selectedProject.invalid"
-                        (click)="saveData()">
-                        <ng-container [ngSwitch]="saveState">
-                
-                            <span *ngSwitchCase="'saving'" class="button-content-wrapper">
-                                <mat-progress-spinner diameter="20" mode="indeterminate"
-                                    [style.margin-right.px]="8"></mat-progress-spinner>
-                                Guardando...
-                            </span>
-                
-                            <span *ngSwitchCase="'saved'" class="button-content-wrapper">
-                                <mat-icon>check</mat-icon>
-                                ¡Guardado!
-                            </span>
-                
-                            <span *ngSwitchDefault class="button-content-wrapper">
-                                <mat-icon>save</mat-icon>
-                                Guardar Datos del Proyecto
-                            </span>
-                
-                        </ng-container>
-                    </button>
-                </mat-card-actions>
-                </mat-card>
-                </div>
+            </form>
+        </mat-card-content>
+
+        <mat-card-actions align="end">
+            <button mat-raised-button color="accent"
+                [disabled]="saveState !== 'idle' || isPageLoading || metadataForm.invalid || selectedProject.invalid"
+                (click)="saveData()">
+                <ng-container [ngSwitch]="saveState">
+
+                    <span *ngSwitchCase="'saving'" class="button-content-wrapper">
+                        <mat-progress-spinner diameter="20" mode="indeterminate"
+                            [style.margin-right.px]="8"></mat-progress-spinner>
+                        Guardando...
+                    </span>
+
+                    <span *ngSwitchCase="'saved'" class="button-content-wrapper">
+                        <mat-icon>check</mat-icon>
+                        ¡Guardado!
+                    </span>
+
+                    <span *ngSwitchDefault class="button-content-wrapper">
+                        <mat-icon>save</mat-icon>
+                        Guardar Datos del Proyecto
+                    </span>
+
+                </ng-container>
+            </button>
+        </mat-card-actions>
+    </mat-card>
+</div>

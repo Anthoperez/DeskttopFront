@@ -49,6 +49,10 @@ export interface PicMetadataDto {
   tesista?: string;
   asesor?: string;
   duracion?: string;
+  facultad?: string;
+  resolucion?: string;
+  tituloProyecto?: string;
+  codigoProyecto?: string;
   presupuestoTotal?: number | null;
   ingresos?: IngresoPic[];
   gastosAnosAnteriores?: GastoAnoAnterior[]; // Reutilizamos la interfaz que ya tenías
